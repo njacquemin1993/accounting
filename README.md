@@ -34,9 +34,15 @@ A simple accounting application built with Python, Streamlit, and SQLAlchemy.
 
 ## Application Structure
 
-- `app.py`: Main Streamlit application with all tabs and user interface
+- `app.py`: Main Streamlit application entry point
 - `database.py`: SQLAlchemy models and database configuration
 - `accounting_utils.py`: Utility functions for accounting calculations
+- `tabs/`: Directory containing tab modules
+  - `chart_of_accounts.py`: Chart of Accounts tab functionality
+  - `journal_entries.py`: Journal Entries tab functionality
+  - `account_balances.py`: Account Balances tab functionality
+  - `result_sheet.py`: Result Sheet (Income Statement) tab functionality
+  - `balance_sheet.py`: Balance Sheet tab functionality
 - `requirements.txt`: Python dependencies
 
 ## Default Chart of Accounts
