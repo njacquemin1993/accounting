@@ -23,12 +23,12 @@ def get_account_balance(session: Session, account_id: int) -> float:
     ).with_entities(JournalEntry.amount).all()
     credit_sum = sum([entry[0] for entry in credit_total])
     
-    # Calculate balance based on account type
-    if account.account_type in ['Asset', 'Expense']:
-        # Normal debit balance
+    # Calculate balance based on category
+    if account.category in ['Active', 'Expenses']:
+        # Normal debit balance (Active = Assets, Expenses = Expenses)
         return debit_sum - credit_sum
     else:
-        # Normal credit balance (Liability, Equity, Revenue)
+        # Normal credit balance (Passive = Liabilities + Equity, Products = Revenue)
         return credit_sum - debit_sum
 
 def get_trial_balance(session: Session) -> pd.DataFrame:
@@ -39,9 +39,9 @@ def get_trial_balance(session: Session) -> pd.DataFrame:
     for account in accounts:
         balance = get_account_balance(session, account.id)
         trial_balance_data.append({
+            'Account ID': account.id,
             'Account Code': account.account_code,
             'Account Name': account.account_name,
-            'Account Type': account.account_type,
             'Category': account.category,
             'Balance': balance
         })
@@ -109,6 +109,55 @@ def get_income_statement_data(session: Session) -> dict:
         'total_expenses': total_expenses,
         'net_income': net_income
     }
+
+def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
+    """Get all journal entries for a specific account."""
+    account = session.query(Account).filter(Account.id == account_id).first()
+    if not account:
+        return pd.DataFrame()
+    
+    entries_data = []
+    
+    # Get all entries where this account is debited
+    debit_entries = session.query(JournalEntry).filter(
+        JournalEntry.debit_account_id == account_id
+    ).order_by(JournalEntry.date.desc()).all()
+    
+    for entry in debit_entries:
+        entries_data.append({
+            'Date': entry.date.strftime('%Y-%m-%d'),
+            'Description': entry.description,
+            'Reference': entry.reference or '',
+            'Counterparty': f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
+            'Debit': entry.amount,
+            'Credit': 0.0,
+            'Type': 'debit'
+        })
+    
+    # Get all entries where this account is credited
+    credit_entries = session.query(JournalEntry).filter(
+        JournalEntry.credit_account_id == account_id
+    ).order_by(JournalEntry.date.desc()).all()
+    
+    for entry in credit_entries:
+        entries_data.append({
+            'Date': entry.date.strftime('%Y-%m-%d'),
+            'Description': entry.description,
+            'Reference': entry.reference or '',
+            'Counterparty': f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
+            'Debit': 0.0,
+            'Credit': entry.amount,
+            'Type': 'credit'
+        })
+    
+    df = pd.DataFrame(entries_data)
+    if not df.empty:
+        # Sort by date (most recent first)
+        df['Date_sort'] = pd.to_datetime(df['Date'])
+        df = df.sort_values('Date_sort', ascending=False)
+        df = df.drop('Date_sort', axis=1)
+    
+    return df
 
 def validate_journal_entry(debit_account_id: int, credit_account_id: int, amount: float) -> tuple:
     """Validate journal entry data."""

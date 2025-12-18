@@ -59,37 +59,35 @@ class DatabaseManager:
             return
         
         default_accounts = [
-            # Assets (Active)
-            {"code": "1000", "name": "Cash", "type": "Asset", "category": "Active"},
-            {"code": "1100", "name": "Accounts Receivable", "type": "Asset", "category": "Active"},
-            {"code": "1200", "name": "Inventory", "type": "Asset", "category": "Active"},
-            {"code": "1500", "name": "Equipment", "type": "Asset", "category": "Active"},
+            # Active (Assets)
+            {"code": "1000", "name": "Cash", "category": "Active"},
+            {"code": "1100", "name": "Accounts Receivable", "category": "Active"},
+            {"code": "1200", "name": "Inventory", "category": "Active"},
+            {"code": "1500", "name": "Equipment", "category": "Active"},
             
-            # Liabilities (Passive)
-            {"code": "2000", "name": "Accounts Payable", "type": "Liability", "category": "Passive"},
-            {"code": "2100", "name": "Short-term Loans", "type": "Liability", "category": "Passive"},
-            {"code": "2500", "name": "Long-term Debt", "type": "Liability", "category": "Passive"},
+            # Passive (Liabilities and Equity)
+            {"code": "2000", "name": "Accounts Payable", "category": "Passive"},
+            {"code": "2100", "name": "Short-term Loans", "category": "Passive"},
+            {"code": "2500", "name": "Long-term Debt", "category": "Passive"},
+            {"code": "3000", "name": "Owner's Equity", "category": "Passive"},
+            {"code": "3100", "name": "Retained Earnings", "category": "Passive"},
             
-            # Equity (Passive)
-            {"code": "3000", "name": "Owner's Equity", "type": "Equity", "category": "Passive"},
-            {"code": "3100", "name": "Retained Earnings", "type": "Equity", "category": "Passive"},
-            
-            # Revenue (Products)
-            {"code": "4000", "name": "Sales Revenue", "type": "Revenue", "category": "Products"},
-            {"code": "4100", "name": "Service Revenue", "type": "Revenue", "category": "Products"},
+            # Products (Revenue)
+            {"code": "4000", "name": "Sales Revenue", "category": "Products"},
+            {"code": "4100", "name": "Service Revenue", "category": "Products"},
             
             # Expenses
-            {"code": "5000", "name": "Cost of Goods Sold", "type": "Expense", "category": "Expenses"},
-            {"code": "5100", "name": "Rent Expense", "type": "Expense", "category": "Expenses"},
-            {"code": "5200", "name": "Utilities Expense", "type": "Expense", "category": "Expenses"},
-            {"code": "5300", "name": "Marketing Expense", "type": "Expense", "category": "Expenses"},
+            {"code": "5000", "name": "Cost of Goods Sold", "category": "Expenses"},
+            {"code": "5100", "name": "Rent Expense", "category": "Expenses"},
+            {"code": "5200", "name": "Utilities Expense", "category": "Expenses"},
+            {"code": "5300", "name": "Marketing Expense", "category": "Expenses"},
         ]
         
         for account_data in default_accounts:
             account = Account(
                 account_code=account_data["code"],
                 account_name=account_data["name"],
-                account_type=account_data["type"],
+                account_type="General",  # Kept for backward compatibility but not used
                 category=account_data["category"]
             )
             session.add(account)
