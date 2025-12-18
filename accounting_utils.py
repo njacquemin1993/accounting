@@ -130,8 +130,7 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
             'Reference': entry.reference or '',
             'Counterparty': f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
             'Debit': entry.amount,
-            'Credit': 0.0,
-            'Type': 'debit'
+            'Credit': 0.0
         })
     
     # Get all entries where this account is credited
@@ -146,8 +145,7 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
             'Reference': entry.reference or '',
             'Counterparty': f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
             'Debit': 0.0,
-            'Credit': entry.amount,
-            'Type': 'credit'
+            'Credit': entry.amount
         })
     
     df = pd.DataFrame(entries_data)

@@ -63,17 +63,6 @@ def view_account_balances(db_manager):
                     
                     st.subheader(f"Entries for {selected_account_label}")
                     
-                    # Prepare display dataframe
-                    display_entries = entries_df[['Date', 'Description', 'Reference', 'Counterparty', 'Debit', 'Credit']].copy()
-                    
-                    # Format amounts with color coding
-                    def format_amount(row):
-                        if row['Debit'] > 0:
-                            return f"<span style='color: black;'>+CHF {row['Debit']:,.2f}</span>"
-                        elif row['Credit'] > 0:
-                            return f"<span style='color: red;'>-CHF {row['Credit']:,.2f}</span>"
-                        return ""
-                    
                     # Create HTML table for styled display
                     html_table = "<table style='width:100%; border-collapse: collapse;'>"
                     html_table += "<thead><tr style='background-color: #f0f2f6;'>"
