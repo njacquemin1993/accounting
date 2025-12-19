@@ -53,7 +53,6 @@ def manage_chart_of_accounts(db_manager):
                 new_account = Account(
                     account_code=account_code,
                     account_name=account_name,
-                    account_type="General",  # Default type since we only use categories
                     category=category
                 )
                 session.add(new_account)

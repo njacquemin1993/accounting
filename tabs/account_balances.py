@@ -63,33 +63,20 @@ def view_account_balances(db_manager):
                     
                     st.subheader(f"Entries for {selected_account_label}")
                     
-                    # Create HTML table for styled display
-                    html_table = "<table style='width:100%; border-collapse: collapse;'>"
-                    html_table += "<thead><tr style='background-color: #f0f2f6;'>"
-                    html_table += "<th style='padding: 10px; text-align: left; border-bottom: 2px solid #ddd;'>Date</th>"
-                    html_table += "<th style='padding: 10px; text-align: left; border-bottom: 2px solid #ddd;'>Description</th>"
-                    html_table += "<th style='padding: 10px; text-align: left; border-bottom: 2px solid #ddd;'>Reference</th>"
-                    html_table += "<th style='padding: 10px; text-align: left; border-bottom: 2px solid #ddd;'>Counterparty</th>"
-                    html_table += "<th style='padding: 10px; text-align: right; border-bottom: 2px solid #ddd;'>Amount</th>"
-                    html_table += "</tr></thead><tbody>"
+                    # Prepare display dataframe with formatted amount column
+                    display_df = entries_df.copy()
                     
-                    for _, row in entries_df.iterrows():
-                        html_table += "<tr style='border-bottom: 1px solid #eee;'>"
-                        html_table += f"<td style='padding: 8px;'>{row['Date']}</td>"
-                        html_table += f"<td style='padding: 8px;'>{row['Description']}</td>"
-                        html_table += f"<td style='padding: 8px;'>{row['Reference']}</td>"
-                        html_table += f"<td style='padding: 8px;'>{row['Counterparty']}</td>"
-                        
-                        if row['Debit'] > 0:
-                            html_table += f"<td style='padding: 8px; text-align: right; color: black;'>+CHF {row['Debit']:,.2f}</td>"
-                        else:
-                            html_table += f"<td style='padding: 8px; text-align: right; color: red;'>-CHF {row['Credit']:,.2f}</td>"
-                        
-                        html_table += "</tr>"
+                    # Create a single Amount column with + for debits and - for credits
+                    display_df['Amount'] = display_df.apply(
+                        lambda row: f"+CHF {row['Debit']:,.2f}" if row['Debit'] > 0 else f"-CHF {row['Credit']:,.2f}",
+                        axis=1
+                    )
                     
-                    html_table += "</tbody></table>"
+                    # Select and reorder columns for display
+                    display_df = display_df[['Date', 'Description', 'Reference', 'Counterparty', 'Amount']]
                     
-                    st.markdown(html_table, unsafe_allow_html=True)
+                    # Display using st.table for better formatting
+                    st.table(display_df)
                 else:
                     st.info("No entries found for this account.")
             

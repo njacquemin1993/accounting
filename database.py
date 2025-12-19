@@ -15,7 +15,6 @@ class Account(Base):
     id = Column(Integer, primary_key=True)
     account_code = Column(String(10), unique=True, nullable=False)
     account_name = Column(String(100), nullable=False)
-    account_type = Column(String(20), nullable=False)  # Asset, Liability, Equity, Revenue, Expense
     category = Column(String(50))  # Active, Passive, Expenses, Products
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -87,7 +86,6 @@ class DatabaseManager:
             account = Account(
                 account_code=account_data["code"],
                 account_name=account_data["name"],
-                account_type="General",  # Kept for backward compatibility but not used
                 category=account_data["category"]
             )
             session.add(account)

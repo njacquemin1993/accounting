@@ -125,7 +125,7 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
     
     for entry in debit_entries:
         entries_data.append({
-            'Date': entry.date.strftime('%Y-%m-%d'),
+            'Date': entry.date,
             'Description': entry.description,
             'Reference': entry.reference or '',
             'Counterparty': f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
@@ -140,7 +140,7 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
     
     for entry in credit_entries:
         entries_data.append({
-            'Date': entry.date.strftime('%Y-%m-%d'),
+            'Date': entry.date,
             'Description': entry.description,
             'Reference': entry.reference or '',
             'Counterparty': f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
@@ -151,9 +151,7 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
     df = pd.DataFrame(entries_data)
     if not df.empty:
         # Sort by date (most recent first)
-        df['Date_sort'] = pd.to_datetime(df['Date'])
-        df = df.sort_values('Date_sort', ascending=False)
-        df = df.drop('Date_sort', axis=1)
+        df = df.sort_values('Date', ascending=False)
     
     return df
 
