@@ -31,36 +31,38 @@ def manage_chart_of_accounts(db_manager):
     
     st.subheader("Add New Account")
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3, col4 = st.columns([0.2, 0.4, 0.3, 0.1], vertical_alignment='bottom')
     
     with col1:
         account_code = st.text_input("Account Code", help="e.g., 1000, 2000, etc.")
+    with col2:
         account_name = st.text_input("Account Name", help="e.g., Cash, Accounts Payable")
         
-    with col2:
+    with col3:
         category = st.selectbox(
             "Category",
             ["Active", "Passive", "Expenses", "Products"]
         )
-    
-    if st.button("Add Account"):
-        if account_code and account_name:
-            # Check if account code already exists
-            existing = session.query(Account).filter(Account.account_code == account_code).first()
-            if existing:
-                st.error("Account code already exists!")
+
+    with col4:
+        if st.button("Add Account", width="stretch"):
+            if account_code and account_name:
+                # Check if account code already exists
+                existing = session.query(Account).filter(Account.account_code == account_code).first()
+                if existing:
+                    st.error("Account code already exists!")
+                else:
+                    new_account = Account(
+                        account_code=account_code,
+                        account_name=account_name,
+                        category=category
+                    )
+                    session.add(new_account)
+                    session.commit()
+                    st.success("Account added successfully!")
+                    st.rerun()
             else:
-                new_account = Account(
-                    account_code=account_code,
-                    account_name=account_name,
-                    category=category
-                )
-                session.add(new_account)
-                session.commit()
-                st.success("Account added successfully!")
-                st.rerun()
-        else:
-            st.error("Please fill in all required fields.")
+                st.error("Please fill in all required fields.")
     
     # Account deactivation section
     st.subheader("Deactivate Account")
