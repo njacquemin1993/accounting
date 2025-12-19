@@ -23,7 +23,6 @@ def manage_journal_entries(db_manager):
             entry_data.append({
                 'Date': entry.date.strftime('%Y-%m-%d'),
                 'Description': entry.description,
-                'Reference': entry.reference or '',
                 'Debit Account': f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
                 'Credit Account': f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
                 'Amount': f"CHF {entry.amount:,.2f}"
@@ -45,42 +44,42 @@ def manage_journal_entries(db_manager):
     account_options = {f"{acc.account_code} - {acc.account_name}": acc.id for acc in active_accounts}
     account_list = list(account_options.keys())
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3, col4, col5, col6 = st.columns(6, vertical_alignment='bottom')
     
     with col1:
         entry_date = st.date_input("Date", value=date.today())
-        description = st.text_input("Description", help="Brief description of the transaction")
-        reference = st.text_input("Reference", help="Optional reference number")
-        
     with col2:
+        description = st.text_input("Description", help="Brief description of the transaction")        
+    with col3:
         debit_account = st.selectbox("Debit Account", account_list)
+    with col4:
         credit_account = st.selectbox("Credit Account", account_list)
+    with col5:
         amount = st.number_input("Amount", min_value=0.01, step=0.01, format="%.2f")
-    
-    if st.button("Add Journal Entry"):
-        if description and amount > 0:
-            debit_account_id = account_options[debit_account]
-            credit_account_id = account_options[credit_account]
-            
-            is_valid, errors = validate_journal_entry(debit_account_id, credit_account_id, amount)
-            
-            if is_valid:
-                new_entry = JournalEntry(
-                    date=datetime.combine(entry_date, datetime.min.time()),
-                    description=description,
-                    reference=reference or None,
-                    debit_account_id=debit_account_id,
-                    credit_account_id=credit_account_id,
-                    amount=amount
-                )
-                session.add(new_entry)
-                session.commit()
-                st.success("Journal entry added successfully!")
-                st.rerun()
+    with col6:
+        if st.button("Add Journal Entry"):
+            if description and amount > 0:
+                debit_account_id = account_options[debit_account]
+                credit_account_id = account_options[credit_account]
+                
+                is_valid, errors = validate_journal_entry(debit_account_id, credit_account_id, amount)
+                
+                if is_valid:
+                    new_entry = JournalEntry(
+                        date=datetime.combine(entry_date, datetime.min.time()),
+                        description=description,
+                        debit_account_id=debit_account_id,
+                        credit_account_id=credit_account_id,
+                        amount=amount
+                    )
+                    session.add(new_entry)
+                    session.commit()
+                    st.success("Journal entry added successfully!")
+                    st.rerun()
+                else:
+                    for error in errors:
+                        st.error(error)
             else:
-                for error in errors:
-                    st.error(error)
-        else:
-            st.error("Please fill in all required fields and ensure amount is greater than zero.")
+                st.error("Please fill in all required fields and ensure amount is greater than zero.")
     
     session.close()

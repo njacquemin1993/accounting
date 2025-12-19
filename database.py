@@ -29,7 +29,6 @@ class JournalEntry(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False, default=datetime.utcnow)
     description = Column(String(200), nullable=False)
-    reference = Column(String(50))
     debit_account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False)
     credit_account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False)
     amount = Column(Float, nullable=False)

@@ -127,7 +127,6 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
         entries_data.append({
             'Date': entry.date,
             'Description': entry.description,
-            'Reference': entry.reference or '',
             'Counterparty': f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
             'Debit': entry.amount,
             'Credit': 0.0
@@ -142,7 +141,6 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
         entries_data.append({
             'Date': entry.date,
             'Description': entry.description,
-            'Reference': entry.reference or '',
             'Counterparty': f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
             'Debit': 0.0,
             'Credit': entry.amount

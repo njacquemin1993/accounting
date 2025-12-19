@@ -73,7 +73,7 @@ def view_account_balances(db_manager):
                     )
                     
                     # Select and reorder columns for display
-                    display_df = display_df[['Date', 'Description', 'Reference', 'Counterparty', 'Amount']]
+                    display_df = display_df[['Date', 'Description', 'Counterparty', 'Amount']]
                     
                     # Display using st.table for better formatting
                     st.table(display_df)
