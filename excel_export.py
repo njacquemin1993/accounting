@@ -328,10 +328,10 @@ def export_balance_sheet(writer, workbook, balance_data, net_income, formats, t)
     balance_status_row = max_detail_row + 2
 
     if abs(balance_diff) < BALANCE_ROUNDING_PRECISION:
-        balance_status = f"✓ {t('balance_sheet_balanced')}"
+        balance_status = f"✓ {t('balance_sheet_balanced_checkmark')}"
         balance_status_format = formats["total"]
     else:
-        balance_status = f"✗ {t('balance_sheet_not_balanced')} ({balance_diff:.2f})"
+        balance_status = f"✗ {t('balance_sheet_not_balanced_x')} ({balance_diff:.2f})"
         balance_status_format = workbook.add_format(
             {
                 "bold": True,
