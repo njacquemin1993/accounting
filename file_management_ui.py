@@ -16,6 +16,7 @@ from accounting_utils import (
     get_account_balance,
 )
 from translation_utils import t
+from helpers import format_currency
 
 
 def create_excel_export():
@@ -826,11 +827,11 @@ def show_file_management_dialog():
                 db_manager.dispose()
 
                 if net_income > 0:
-                    st.success(f"📈 {t('net_income')}: CHF {net_income:,.2f}")
+                    st.success(f"📈 {t('net_income')}: {format_currency(net_income)}")
                 elif net_income < 0:
-                    st.error(f"📉 {t('net_loss')}: CHF {abs(net_income):,.2f}")
+                    st.error(f"📉 {t('net_loss')}: {format_currency(abs(net_income))}")
                 else:
-                    st.info(f"➖ {t('net_income')}: CHF 0.00")
+                    st.info(f"➖ {t('net_income')}: {format_currency(0.0)}")
 
                 st.write(
                     f"**{t('net_result_transfer')}:** {selected_account.account_code} - {selected_account.account_name}"

@@ -8,6 +8,7 @@ from database import DatabaseManager
 from accounting_utils import get_income_statement_data
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
+from helpers import format_currency
 
 
 def get_database():
@@ -53,7 +54,7 @@ with col1:
             products_data.append(
                 {
                     t("account_column"): f"{product['code']} - {product['name']}",
-                    t("amount_column"): f"CHF {product['balance']:,.2f}",
+                    t("amount_column"): format_currency(product['balance']),
                 }
             )
 
@@ -70,7 +71,7 @@ with col1:
                 t("account_column"): t("total_products"),
                 t(
                     "amount_column"
-                ): f"CHF {income_statement_data['total_products']:,.2f}",
+                ): format_currency(income_statement_data['total_products']),
             }
         )
 
@@ -90,7 +91,7 @@ with col2:
             expenses_data.append(
                 {
                     t("account_column"): f"{expense['code']} - {expense['name']}",
-                    t("amount_column"): f"CHF {expense['balance']:,.2f}",
+                    t("amount_column"): format_currency(expense['balance']),
                 }
             )
 
@@ -107,7 +108,7 @@ with col2:
                 t("account_column"): t("total_expenses"),
                 t(
                     "amount_column"
-                ): f"CHF {income_statement_data['total_expenses']:,.2f}",
+                ): format_currency(income_statement_data['total_expenses']),
             }
         )
 
@@ -131,9 +132,9 @@ with net_income_col1:
 
 with net_income_col2:
     if net_income >= 0:
-        st.markdown(f"### **CHF {net_income:,.2f}** 💰")
+        st.markdown(f"### **{format_currency(net_income)}** 💰")
     else:
-        st.markdown(f"### **CHF {abs(net_income):,.2f}** ⚠️")
+        st.markdown(f"### **{format_currency(abs(net_income))}** ⚠️")
 
 # Additional metrics
 st.markdown("---")
@@ -141,12 +142,12 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(
-        t("total_products"), f"CHF {income_statement_data['total_products']:,.2f}"
+        t("total_products"), format_currency(income_statement_data['total_products'])
     )
 
 with col2:
     st.metric(
-        t("total_expenses"), f"CHF {income_statement_data['total_expenses']:,.2f}"
+        t("total_expenses"), format_currency(income_statement_data['total_expenses'])
     )
 
 with col3:

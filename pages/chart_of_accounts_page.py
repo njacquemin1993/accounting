@@ -12,6 +12,7 @@ from helpers import (
     get_category_display_map,
     get_reverse_category_map,
     is_balance_sheet_category,
+    format_currency,
 )
 from constants import DEFAULT_CURRENCY
 
@@ -354,9 +355,9 @@ if accounts:
                     {
                         t("code"): account.account_code,
                         t("name"): account.account_name,
-                        t("balance"): f"CHF {account.balance:,.2f}"
+                        t("balance"): format_currency(account.balance)
                         if hasattr(account, "balance")
-                        else "CHF 0.00",
+                        else format_currency(0.0),
                     }
                 )
 
@@ -446,9 +447,9 @@ if accounts:
                     {
                         t("code"): account.account_code,
                         t("name"): account.account_name,
-                        t("balance"): f"CHF {account.balance:,.2f}"
+                        t("balance"): format_currency(account.balance)
                         if hasattr(account, "balance")
-                        else "CHF 0.00",
+                        else format_currency(0.0),
                     }
                 )
 

@@ -13,6 +13,7 @@ from constants import (
     DEBIT_BALANCE_CATEGORIES,
     CREDIT_BALANCE_CATEGORIES,
     MIN_ACCOUNTS_FOR_JOURNAL_ENTRY,
+    DEFAULT_CURRENCY,
 )
 
 
@@ -130,3 +131,17 @@ def format_account_option(account_code: str, account_name: str) -> str:
 def has_sufficient_accounts(accounts_count: int) -> bool:
     """Check if there are enough accounts to create journal entries."""
     return accounts_count >= MIN_ACCOUNTS_FOR_JOURNAL_ENTRY
+
+
+def format_currency(amount: float, currency: str = DEFAULT_CURRENCY) -> str:
+    """
+    Format an amount as currency string.
+    
+    Args:
+        amount: The amount to format
+        currency: The currency code (defaults to DEFAULT_CURRENCY)
+        
+    Returns:
+        str: Formatted currency string (e.g., "CHF 1,234.56")
+    """
+    return f"{currency} {amount:,.2f}"

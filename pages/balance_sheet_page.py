@@ -8,6 +8,8 @@ from database import DatabaseManager
 from accounting_utils import get_balance_sheet_data, get_income_statement_data
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
+from helpers import format_currency
+from constants import BALANCE_ROUNDING_PRECISION
 
 
 def get_database():
@@ -49,7 +51,7 @@ if balance_sheet_data["active"]:
         active_data.append(
             {
                 t("account_column"): f"{account['code']} - {account['name']}",
-                t("amount_column"): f"CHF {account['balance']:,.2f}",
+                t("amount_column"): format_currency(account['balance']),
             }
         )
 
@@ -60,7 +62,7 @@ if balance_sheet_data["passive"]:
         passive_data.append(
             {
                 t("account_column"): f"{account['code']} - {account['name']}",
-                t("amount_column"): f"CHF {account['balance']:,.2f}",
+                t("amount_column"): format_currency(account['balance']),
             }
         )
 
@@ -70,7 +72,7 @@ if abs(net_income) > 0.01:
     passive_data.append(
         {
             t("account_column"): t("retained_earnings"),
-            t("amount_column"): f"CHF {net_income:,.2f}",
+            t("amount_column"): format_currency(net_income),
         }
     )
 
@@ -91,7 +93,7 @@ active_data.append({t("account_column"): "", t("amount_column"): ""})
 active_data.append(
     {
         t("account_column"): t("total_active"),
-        t("amount_column"): f"CHF {balance_sheet_data['total_active']:,.2f}",
+        t("amount_column"): format_currency(balance_sheet_data['total_active']),
     }
 )
 
@@ -100,7 +102,7 @@ total_passive_with_net_income = balance_sheet_data["total_passive"] + net_income
 passive_data.append(
     {
         t("account_column"): t("total_passive"),
-        t("amount_column"): f"CHF {total_passive_with_net_income:,.2f}",
+        t("amount_column"): format_currency(total_passive_with_net_income),
     }
 )
 
@@ -130,17 +132,17 @@ difference = balance_sheet_data["total_active"] - total_passive_with_net_income
 if abs(difference) < 0.01:  # Allow for small rounding differences
     st.success(t("balance_sheet_balanced_checkmark"))
 else:
-    st.error(f"{t('balance_sheet_not_balanced_x')} CHF {difference:,.2f}")
+    st.error(f"{t('balance_sheet_not_balanced_x')} {format_currency(difference)}")
 
 # Show net income impact
 if abs(income_statement_data["net_income"]) > 0.01:
     if income_statement_data["net_income"] >= 0:
         st.info(
-            f"{t('net_income_info')} CHF {income_statement_data['net_income']:,.2f} {t('has_been_included_in_passive')}"
+            f"{t('net_income_info')} {format_currency(income_statement_data['net_income'])} {t('has_been_included_in_passive')}"
         )
     else:
         st.warning(
-            f"{t('net_loss_warning')} CHF {abs(income_statement_data['net_income']):,.2f} {t('has_been_included_in_passive')}"
+            f"{t('net_loss_warning')} {format_currency(abs(income_statement_data['net_income']))} {t('has_been_included_in_passive')}"
         )
 
 session.close()

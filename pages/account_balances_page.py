@@ -7,6 +7,7 @@ from database import DatabaseManager
 from accounting_utils import get_trial_balance, get_account_entries, get_account_balance
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
+from helpers import format_currency
 
 
 def get_database():
@@ -23,7 +24,7 @@ def show_account_details_dialog(session, account_id, account_label):
     if not entries_df.empty:
         # Display account balance
         account_balance = get_account_balance(session, account_id)
-        st.metric(t("account_balance"), f"CHF {account_balance:,.2f}")
+        st.metric(t("account_balance"), format_currency(account_balance))
 
         st.subheader(f"{t('entries_for')} {account_label}")
 
@@ -133,7 +134,7 @@ if not trial_balance.empty:
     )
 
     # Format the balance column
-    display_df[t("balance")] = display_df[t("balance")].apply(lambda x: f"CHF {x:,.2f}")
+    display_df[t("balance")] = display_df[t("balance")].apply(lambda x: format_currency(x))
 
     # Check for clear selection flag
     if st.session_state.get("clear_selection", False):
