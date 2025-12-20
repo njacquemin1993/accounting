@@ -6,18 +6,18 @@ import streamlit as st
 import pandas as pd
 from database import DatabaseManager
 from accounting_utils import get_income_statement_data
-from translation_utils import t, language_selector
+from translation_utils import t, language_selector, header_with_controls
+from file_management_ui import file_management_button
 
 
-@st.cache_resource
 def get_database():
     db_manager = DatabaseManager()
     db_manager.initialize_default_accounts()
     return db_manager
 
 
-# Page header with language selector
-header_col1, header_col2 = st.columns([3, 1])
+# Page header with controls
+header_col1, header_col2, header_col3 = header_with_controls()
 
 with header_col1:
     st.title(f"📈 {t('result_sheet')}")
@@ -25,6 +25,10 @@ with header_col1:
 with header_col2:
     st.markdown("<br>", unsafe_allow_html=True)
     language_selector()
+
+with header_col3:
+    st.markdown("<br>", unsafe_allow_html=True)
+    file_management_button()
 
 st.markdown("---")
 

@@ -74,3 +74,9 @@ def language_selector():
     if selected_lang and selected_lang != current_lang:
         set_language(selected_lang)
         st.rerun()
+
+
+def header_with_controls():
+    """Display page header with language selector and file management in the same row."""
+    header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
+    return header_col1, header_col2, header_col3
