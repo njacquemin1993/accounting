@@ -35,30 +35,45 @@ def main():
     # Initialize database
     db_manager = get_database()
 
-    # Create tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        [
-            t("tab_chart_of_accounts"),
-            t("tab_journal_entries"),
-            t("tab_account_balances"),
-            t("tab_result_sheet"),
-            t("tab_balance_sheet"),
-        ]
-    )
+    # Initialize active tab in session state
+    if "active_tab" not in st.session_state:
+        st.session_state.active_tab = 0
 
-    with tab1:
+    # Create custom tab navigation
+    tab_names = [
+        t("tab_chart_of_accounts"),
+        t("tab_journal_entries"),
+        t("tab_account_balances"),
+        t("tab_result_sheet"),
+        t("tab_balance_sheet"),
+    ]
+
+    # Create tab buttons
+    cols = st.columns(len(tab_names))
+    for i, tab_name in enumerate(tab_names):
+        with cols[i]:
+            button_clicked = st.button(
+                tab_name,
+                key=f"tab_{i}",
+                use_container_width=True,
+                type="primary" if st.session_state.active_tab == i else "secondary"
+            )
+            if button_clicked:
+                st.session_state.active_tab = i
+                st.rerun()
+
+    st.markdown("---")
+
+    # Display content based on active tab
+    if st.session_state.active_tab == 0:
         manage_chart_of_accounts(db_manager)
-
-    with tab2:
+    elif st.session_state.active_tab == 1:
         manage_journal_entries(db_manager)
-
-    with tab3:
+    elif st.session_state.active_tab == 2:
         view_account_balances(db_manager)
-
-    with tab4:
+    elif st.session_state.active_tab == 3:
         view_result_sheet(db_manager)
-
-    with tab5:
+    elif st.session_state.active_tab == 4:
         view_balance_sheet(db_manager)
 
 

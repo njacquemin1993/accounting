@@ -42,16 +42,17 @@ def language_selector():
         t("language_selector"),
         list(languages.values()),
         index=list(languages.values()).index(current_display),
-        key="language_selectbox",
+        key="language_selectbox"
     )
 
-    # Find selected language code
+    # Find selected language code and update if changed
     selected_lang = None
     for code, display in languages.items():
         if display == selected_display:
             selected_lang = code
             break
-
+    
+    # Update language and rerun to refresh translations
     if selected_lang and selected_lang != current_lang:
-        set_language(selected_lang)
+        st.session_state.language = selected_lang
         st.rerun()
