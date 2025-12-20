@@ -6,11 +6,11 @@ TRANSLATIONS = {
     "en": {
         # App title and main navigation
         "app_title": "Simple Accounting System",
-        "tab_chart_of_accounts": "📊 Chart of Accounts",
-        "tab_journal_entries": "📝 Journal Entries",
-        "tab_account_balances": "⚖️ Account Balances",
-        "tab_result_sheet": "📈 Result Sheet",
-        "tab_balance_sheet": "📋 Balance Sheet",
+        "tab_chart_of_accounts": "Chart of Accounts",
+        "tab_journal_entries": "Journal Entries",
+        "tab_account_balances": "Account Balances",
+        "tab_result_sheet": "Result Sheet",
+        "tab_balance_sheet": "Balance Sheet",
         "language_selector": "Language",
         # Chart of Accounts tab
         "chart_of_accounts": "Chart of Accounts",
@@ -114,11 +114,11 @@ TRANSLATIONS = {
     "fr": {
         # App title and main navigation
         "app_title": "Système Comptable Simple",
-        "tab_chart_of_accounts": "📊 Plan Comptable",
-        "tab_journal_entries": "📝 Écritures",
-        "tab_account_balances": "⚖️ Soldes des Comptes",
-        "tab_result_sheet": "📈 Compte de Résultat",
-        "tab_balance_sheet": "📋 Bilan",
+        "tab_chart_of_accounts": "Plan Comptable",
+        "tab_journal_entries": "Écritures",
+        "tab_account_balances": "Soldes des Comptes",
+        "tab_result_sheet": "Compte de Résultat",
+        "tab_balance_sheet": "Bilan",
         "language_selector": "Langue",
         # Chart of Accounts tab
         "chart_of_accounts": "Plan Comptable",
@@ -222,11 +222,11 @@ TRANSLATIONS = {
     "de": {
         # App title and main navigation
         "app_title": "Einfaches Buchhaltungssystem",
-        "tab_chart_of_accounts": "📊 Kontenplan",
-        "tab_journal_entries": "📝 Journalbuchungen",
-        "tab_account_balances": "⚖️ Kontosalden",
-        "tab_result_sheet": "📈 Erfolgsrechnung",
-        "tab_balance_sheet": "📋 Bilanz",
+        "tab_chart_of_accounts": "Kontenplan",
+        "tab_journal_entries": "Journalbuchungen",
+        "tab_account_balances": "Kontosalden",
+        "tab_result_sheet": "Erfolgsrechnung",
+        "tab_balance_sheet": "Bilanz",
         "language_selector": "Sprache",
         # Chart of Accounts tab
         "chart_of_accounts": "Kontenplan",

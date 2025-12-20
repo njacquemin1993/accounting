@@ -1,103 +1,26 @@
 """
-Main Streamlit application for the accounting system.
+Main Streamlit application for the accounting system using st.navigation.
 """
 
 import streamlit as st
-from database import DatabaseManager
-from tabs import (
-    manage_chart_of_accounts,
-    manage_journal_entries,
-    view_account_balances,
-    view_result_sheet,
-    view_balance_sheet,
-)
-from translation_utils import t, language_selector
-
-
-# Initialize database
-@st.cache_resource
-def get_database():
-    db_manager = DatabaseManager()
-    db_manager.initialize_default_accounts()
-    return db_manager
+from translation_utils import t
 
 
 def main():
     st.set_page_config(page_title="Accounting System", page_icon="💰", layout="wide")
 
-    # Header with title and language selector
-    header_col1, header_col2 = st.columns([3, 1])
-    
-    with header_col1:
-        st.title(f"💰 {t('app_title')}")
-    
-    with header_col2:
-        st.markdown("<br>", unsafe_allow_html=True)  # Add some vertical spacing
-        language_selector()
-
-    # Initialize database
-    db_manager = get_database()
-
-    # Initialize active tab in session state
-    query_params = st.query_params
-    url_tab = query_params.get("tab", None)
-    
-    if "active_tab" not in st.session_state:
-        # Use URL tab if available and valid, otherwise default to 0
-        if url_tab and url_tab.isdigit():
-            tab_index = int(url_tab)
-            if 0 <= tab_index <= 4:
-                st.session_state.active_tab = tab_index
-            else:
-                st.session_state.active_tab = 0
-        else:
-            st.session_state.active_tab = 0
-    
-    # Update URL to reflect current tab if it's different
-    current_url_tab = query_params.get("tab", None)
-    if current_url_tab != str(st.session_state.active_tab):
-        st.query_params["tab"] = str(st.session_state.active_tab)
-
-    # Create custom tab navigation with better spacing
-    tab_names = [
-        t("tab_chart_of_accounts"),
-        t("tab_journal_entries"),
-        t("tab_account_balances"),
-        t("tab_result_sheet"),
-        t("tab_balance_sheet"),
+    # Create navigation pages - each as its own top-level tab
+    pages = [
+        st.Page("pages/chart_of_accounts_page.py", title=t("tab_chart_of_accounts"), icon="📊"),
+        st.Page("pages/journal_entries_page.py", title=t("tab_journal_entries"), icon="📝"),
+        st.Page("pages/account_balances_page.py", title=t("tab_account_balances"), icon="⚖️"),
+        st.Page("pages/result_sheet_page.py", title=t("tab_result_sheet"), icon="📈"),
+        st.Page("pages/balance_sheet_page.py", title=t("tab_balance_sheet"), icon="📋"),
     ]
 
-    # Create a container for tabs and language selector alignment
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Create tab buttons
-    cols = st.columns(len(tab_names))
-    for i, tab_name in enumerate(tab_names):
-        with cols[i]:
-            button_clicked = st.button(
-                tab_name,
-                key=f"tab_{i}",
-                use_container_width=True,
-                type="primary" if st.session_state.active_tab == i else "secondary"
-            )
-            if button_clicked:
-                st.session_state.active_tab = i
-                st.query_params["tab"] = str(i)
-                st.rerun()
-
-    st.markdown("---")
-
-    # Display content based on active tab
-    if st.session_state.active_tab == 0:
-        manage_chart_of_accounts(db_manager)
-    elif st.session_state.active_tab == 1:
-        manage_journal_entries(db_manager)
-    elif st.session_state.active_tab == 2:
-        view_account_balances(db_manager)
-    elif st.session_state.active_tab == 3:
-        view_result_sheet(db_manager)
-    elif st.session_state.active_tab == 4:
-        view_balance_sheet(db_manager)
+    # Create navigation with top position (naturally sticky)
+    pg = st.navigation(pages, position="top")
+    pg.run()
 
 
 if __name__ == "__main__":
