@@ -14,7 +14,7 @@ def get_account_balance(session: Session, account_id: int) -> float:
         return 0.0
 
     # Start with the base balance (for Active/Passive accounts)
-    base_balance = account.balance if hasattr(account, 'balance') else 0.0
+    base_balance = account.balance if hasattr(account, "balance") else 0.0
 
     # Get all debit entries for this account
     debit_total = (

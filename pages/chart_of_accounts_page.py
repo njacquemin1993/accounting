@@ -71,7 +71,7 @@ def show_edit_account_dialog(session, account_id):
     )
 
     edit_category = st.selectbox(t("category"), categories, index=current_index)
-    
+
     # Map translated category back to English for validation
     reverse_category_map = {
         t("active"): "Active",
@@ -80,18 +80,18 @@ def show_edit_account_dialog(session, account_id):
         t("products"): "Products",
     }
     db_category = reverse_category_map.get(edit_category, "Active")
-    
+
     # Show balance field only for Active and Passive accounts
     edit_balance = 0.0
     if db_category in ["Active", "Passive"]:
-        current_balance = account.balance if hasattr(account, 'balance') else 0.0
+        current_balance = account.balance if hasattr(account, "balance") else 0.0
         edit_balance = st.number_input(
             t("balance"),
             min_value=0.0,
             step=0.01,
             format="%.2f",
             value=float(current_balance),
-            help=t("initial_balance_help")
+            help=t("initial_balance_help"),
         )
 
     col1, col2 = st.columns([1, 1])
@@ -212,16 +212,16 @@ def show_add_account_dialog(session):
     category = st.selectbox(
         t("category"), [t("active"), t("passive"), t("expenses"), t("products")]
     )
-    
+
     # Map translated category back to English for validation
     category_map = {
         t("active"): "Active",
-        t("passive"): "Passive", 
+        t("passive"): "Passive",
         t("expenses"): "Expenses",
         t("products"): "Products",
     }
     db_category = category_map.get(category, "Active")
-    
+
     # Show balance field only for Active and Passive accounts
     balance = 0.0
     if db_category in ["Active", "Passive"]:
@@ -230,7 +230,7 @@ def show_add_account_dialog(session):
             min_value=0.0,
             step=0.01,
             format="%.2f",
-            help=t("initial_balance_help")
+            help=t("initial_balance_help"),
         )
 
     col1, col2 = st.columns([1, 1])
@@ -383,7 +383,9 @@ if accounts:
                     {
                         t("code"): account.account_code,
                         t("name"): account.account_name,
-                        t("balance"): f"CHF {account.balance:,.2f}" if hasattr(account, 'balance') else "CHF 0.00",
+                        t("balance"): f"CHF {account.balance:,.2f}"
+                        if hasattr(account, "balance")
+                        else "CHF 0.00",
                     }
                 )
 
@@ -473,7 +475,9 @@ if accounts:
                     {
                         t("code"): account.account_code,
                         t("name"): account.account_name,
-                        t("balance"): f"CHF {account.balance:,.2f}" if hasattr(account, 'balance') else "CHF 0.00",
+                        t("balance"): f"CHF {account.balance:,.2f}"
+                        if hasattr(account, "balance")
+                        else "CHF 0.00",
                     }
                 )
 

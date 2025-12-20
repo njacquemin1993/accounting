@@ -26,7 +26,9 @@ class Account(Base):
     account_code = Column(String(10), unique=True, nullable=False)
     account_name = Column(String(100), nullable=False)
     category = Column(String(50))  # Active, Passive, Expenses, Products
-    balance = Column(Float, nullable=False, default=0.0)  # Base balance for Active/Passive accounts
+    balance = Column(
+        Float, nullable=False, default=0.0
+    )  # Base balance for Active/Passive accounts
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
 

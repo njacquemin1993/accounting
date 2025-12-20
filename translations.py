@@ -169,7 +169,6 @@ TRANSLATIONS = {
         "download_excel_file": "Download Excel File",
         "export_error": "Error creating Excel export",
         "total": "Total",
-        "net_income": "Net Income",
     },
     "fr": {
         # App title and main navigation
@@ -337,7 +336,6 @@ TRANSLATIONS = {
         "download_excel_file": "Télécharger le Fichier Excel",
         "export_error": "Erreur lors de la création de l'export Excel",
         "total": "Total",
-        "net_income": "Résultat Net",
     },
     "de": {
         # App title and main navigation
@@ -386,7 +384,6 @@ TRANSLATIONS = {
         "confirm_delete": "Löschen Bestätigen",
         "confirm_delete_message": "Sind Sie sicher, dass Sie diese Buchung löschen möchten?",
         "entry_updated": "Buchung erfolgreich aktualisiert!",
-        "error_loading_entries": "Fehler beim Laden der Buchungen",
         "error_loading_entries": "Fehler beim Laden der Buchungen",
         "entry_deleted": "Buchung erfolgreich gelöscht!",
         "entry_not_found": "Buchung nicht gefunden.",
@@ -506,7 +503,6 @@ TRANSLATIONS = {
         "download_excel_file": "Excel-Datei Herunterladen",
         "export_error": "Fehler beim Erstellen des Excel-Exports",
         "total": "Gesamt",
-        "net_income": "Nettoertrag",
     },
 }
 
