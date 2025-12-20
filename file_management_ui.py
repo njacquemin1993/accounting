@@ -6,6 +6,7 @@ import streamlit as st
 import pandas as pd
 import io
 import zipfile
+from datetime import datetime
 from file_manager import FileManager
 from database import DatabaseManager, Account, JournalEntry
 from accounting_utils import (
@@ -14,7 +15,6 @@ from accounting_utils import (
     get_account_entries,
     get_account_balance,
 )
-from datetime import datetime
 from translation_utils import t
 
 
@@ -200,8 +200,6 @@ def create_excel_export():
                     row_formats.append("normal")
 
             # Calculate and add final balance
-            from accounting_utils import get_account_balance
-
             final_balance = get_account_balance(session, account.id)
 
             debit_final = ""
@@ -271,8 +269,6 @@ def create_excel_export():
                     ):
                         try:
                             # Try to parse the date string
-                            from datetime import datetime
-
                             date_obj = datetime.strptime(
                                 row_data[t("date")], "%Y-%m-%d"
                             )

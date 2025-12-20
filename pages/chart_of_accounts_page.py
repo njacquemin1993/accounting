@@ -4,39 +4,21 @@ Chart of Accounts page for navigation.
 
 import streamlit as st
 import pandas as pd
-from database import DatabaseManager, Account
+from database import DatabaseManager, Account, JournalEntry
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
+from helpers import (
+    validate_account_code,
+    get_category_display_map,
+    get_reverse_category_map,
+    is_balance_sheet_category,
+)
+from constants import DEFAULT_CURRENCY
 
 
 def get_database():
     db_manager = DatabaseManager()
     return db_manager
-
-
-def validate_account_code(account_code: str, category: str) -> tuple[bool, str]:
-    """
-    Validate account code based on category.
-    Returns (is_valid, error_message)
-    """
-    try:
-        code_num = int(account_code)
-    except ValueError:
-        return False, t("account_code_must_be_numeric")
-
-    validation_rules = {
-        "Active": (1000, 1999, t("account_code_range_active")),
-        "Passive": (2000, 2999, t("account_code_range_passive")),
-        "Expenses": (3000, 3999, t("account_code_range_expenses")),
-        "Products": (6000, 6999, t("account_code_range_products")),
-    }
-
-    if category in validation_rules:
-        min_code, max_code, error_msg = validation_rules[category]
-        if not (min_code <= code_num <= max_code):
-            return False, error_msg
-
-    return True, ""
 
 
 @st.dialog(t("edit_account"))
@@ -56,13 +38,9 @@ def show_edit_account_dialog(session, account_id):
     )
 
     # Category selection with current value
-    categories = [t("active"), t("passive"), t("expenses"), t("products")]
-    category_map = {
-        "Active": t("active"),
-        "Passive": t("passive"),
-        "Expenses": t("expenses"),
-        "Products": t("products"),
-    }
+    category_map = get_category_display_map(t)
+    categories = list(category_map.values())
+    
     current_category_translated = category_map.get(account.category, t("active"))
     current_index = (
         categories.index(current_category_translated)
@@ -73,17 +51,12 @@ def show_edit_account_dialog(session, account_id):
     edit_category = st.selectbox(t("category"), categories, index=current_index)
 
     # Map translated category back to English for validation
-    reverse_category_map = {
-        t("active"): "Active",
-        t("passive"): "Passive",
-        t("expenses"): "Expenses",
-        t("products"): "Products",
-    }
+    reverse_category_map = get_reverse_category_map(t)
     db_category = reverse_category_map.get(edit_category, "Active")
 
     # Show balance field only for Active and Passive accounts
     edit_balance = 0.0
-    if db_category in ["Active", "Passive"]:
+    if is_balance_sheet_category(db_category):
         current_balance = account.balance if hasattr(account, "balance") else 0.0
         edit_balance = st.number_input(
             t("balance"),
@@ -101,7 +74,7 @@ def show_edit_account_dialog(session, account_id):
             if edit_code and edit_name:
                 # Validate account code for the category
                 is_valid, validation_error = validate_account_code(
-                    edit_code, db_category
+                    edit_code, db_category, t
                 )
                 if not is_valid:
                     st.error(validation_error)
@@ -120,7 +93,7 @@ def show_edit_account_dialog(session, account_id):
                     account.account_name = edit_name
                     account.category = db_category
                     # Update balance for Active/Passive accounts
-                    if db_category in ["Active", "Passive"]:
+                    if is_balance_sheet_category(db_category):
                         account.balance = edit_balance
                     else:
                         account.balance = 0.0
@@ -144,8 +117,6 @@ def show_delete_account_dialog(session, account_id):
         return
 
     # Check if account has any journal entries
-    from database import JournalEntry
-
     entries_count = (
         session.query(JournalEntry)
         .filter(

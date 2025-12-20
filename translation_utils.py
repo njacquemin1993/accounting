@@ -4,6 +4,11 @@ Translation utilities for the accounting application.
 
 import streamlit as st
 from translations import get_translation, get_available_languages
+from constants import (
+    AVAILABLE_LANGUAGES,
+    DEFAULT_LANGUAGE,
+    LANGUAGE_OPTIONS,
+)
 
 
 def init_language():
@@ -14,10 +19,10 @@ def init_language():
 
     if "language" not in st.session_state:
         # Use URL language if available, otherwise default to English
-        if url_language and url_language in ["en", "fr", "de"]:
+        if url_language and url_language in AVAILABLE_LANGUAGES:
             st.session_state.language = url_language
         else:
-            st.session_state.language = "en"
+            st.session_state.language = DEFAULT_LANGUAGE
 
     # Update URL to reflect current language if it's different
     current_url_lang = query_params.get("lang", None)
@@ -49,23 +54,20 @@ def language_selector():
     get_available_languages()
     current_lang = get_current_language()
 
-    # Language options with flag emojis
-    language_options = {"en": "🇺🇸 English", "fr": "🇫🇷 Français", "de": "🇩🇪 Deutsch"}
-
     # Find current language display name
-    current_display = language_options.get(current_lang, "🇺🇸 English")
+    current_display = LANGUAGE_OPTIONS.get(current_lang, LANGUAGE_OPTIONS[DEFAULT_LANGUAGE])
 
     selected_display = st.selectbox(
         "language",
-        list(language_options.values()),
-        index=list(language_options.values()).index(current_display),
+        list(LANGUAGE_OPTIONS.values()),
+        index=list(LANGUAGE_OPTIONS.values()).index(current_display),
         key="language_selectbox",
         label_visibility="collapsed",
     )
 
     # Find selected language code and update if changed
     selected_lang = None
-    for code, display in language_options.items():
+    for code, display in LANGUAGE_OPTIONS.items():
         if display == selected_display:
             selected_lang = code
             break
