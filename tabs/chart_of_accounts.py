@@ -53,7 +53,7 @@ def manage_chart_of_accounts(db_manager):
     st.subheader(t("add_new_account"))
 
     col1, col2, col3, col4 = st.columns(
-        [0.2, 0.4, 0.3, 0.1], vertical_alignment="bottom"
+        [0.2, 0.4, 0.2, 0.2], vertical_alignment="bottom"
     )
 
     with col1:
