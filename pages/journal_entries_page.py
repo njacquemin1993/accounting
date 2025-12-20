@@ -155,6 +155,9 @@ def show_add_entry_dialog(session):
             st.rerun()
 
 
+db_manager = get_database()
+session = db_manager.get_session()
+
 # Page header with language selector
 header_col1, header_col2 = st.columns([3, 1])
 
@@ -167,17 +170,48 @@ with header_col2:
 
 st.markdown("---")
 
-# Initialize database and show content
-db_manager = get_database()
-
-session = db_manager.get_session()
-
 # Display existing journal entries
 entries = (
     session.query(JournalEntry).order_by(JournalEntry.date.desc()).limit(20).all()
 )
 
+st.subheader(t("edit_journal_entries"))
+edit_col, add_col = st.columns([2, 1], vertical_alignment="bottom")
+
+with add_col:
+    if st.button(t("add_new_journal_entry"), type="primary", use_container_width=True):
+        show_add_entry_dialog(session)
+
 if entries:
+
+    with edit_col:    
+        # Create entry selection dropdown
+        entry_options = {}
+        for entry in entries:
+            entry_label = f"{entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}"
+            entry_options[entry_label] = entry.id
+        
+        if entry_options:
+            selected_entry_label = st.selectbox(
+                t("select_entry_to_modify"),
+                list(entry_options.keys())
+            )
+            
+            if selected_entry_label:
+                selected_entry_id = entry_options[selected_entry_label]
+                
+                # Edit and Delete buttons
+                edit_col, delete_col = st.columns(2)
+                
+                with edit_col:
+                    if st.button(t("edit_entry"), use_container_width=True):
+                        show_edit_dialog(session, selected_entry_id)
+                
+                with delete_col:
+                    if st.button(t("delete_entry"), type="secondary", use_container_width=True):
+                        show_delete_dialog(session, selected_entry_id)
+
+    st.markdown("---")
     st.subheader(t("recent_journal_entries"))
     entry_data = []
     for entry in entries:
@@ -199,39 +233,6 @@ if entries:
     df = pd.DataFrame(entry_data).set_index("id")
     st.dataframe(df, width="stretch")
     
-    # Edit/Delete section
-    st.markdown("---")
-    st.subheader(t("edit_journal_entries"))
     
-    # Create entry selection dropdown
-    entry_options = {}
-    for entry in entries:
-        entry_label = f"{entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}"
-        entry_options[entry_label] = entry.id
-    
-    if entry_options:
-        selected_entry_label = st.selectbox(
-            t("select_entry_to_modify"),
-            list(entry_options.keys())
-        )
-        
-        if selected_entry_label:
-            selected_entry_id = entry_options[selected_entry_label]
-            
-            # Edit and Delete buttons
-            edit_col, delete_col = st.columns([1, 1])
-            
-            with edit_col:
-                if st.button(t("edit_entry"), use_container_width=True):
-                    show_edit_dialog(session, selected_entry_id)
-            
-            with delete_col:
-                if st.button(t("delete_entry"), type="secondary", use_container_width=True):
-                    show_delete_dialog(session, selected_entry_id)
-
-# Add new entry button
-st.markdown("---")
-if st.button(t("add_new_journal_entry"), use_container_width=True, type="primary"):
-    show_add_entry_dialog(session)
 
 session.close()
