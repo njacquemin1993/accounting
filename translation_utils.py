@@ -60,11 +60,11 @@ def language_selector():
     current_display = language_options.get(current_lang, "🇺🇸 English")
 
     selected_display = st.selectbox(
-        "",  # No label for cleaner look
+        "language",
         list(language_options.values()),
         index=list(language_options.values()).index(current_display),
         key="language_selectbox",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
     )
 
     # Find selected language code and update if changed
