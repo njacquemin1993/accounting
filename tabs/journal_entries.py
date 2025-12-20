@@ -29,7 +29,7 @@ def manage_journal_entries(db_manager):
             })
         
         df = pd.DataFrame(entry_data)
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width="stretch")
     
     st.subheader("Add New Journal Entry")
     

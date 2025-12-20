@@ -32,7 +32,7 @@ def view_account_balances(db_manager):
         display_df['Balance'] = display_df['Balance'].apply(lambda x: f"CHF {x:,.2f}")
         
         # Display the dataframe
-        st.dataframe(display_df, use_container_width=True)
+        st.dataframe(display_df, width="stretch")
         
         # Account selection for details
         st.markdown("---")

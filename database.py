@@ -20,8 +20,8 @@ class Account(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationship with journal entries
-    debit_entries = relationship("JournalEntry", foreign_keys="JournalEntry.debit_account_id")
-    credit_entries = relationship("JournalEntry", foreign_keys="JournalEntry.credit_account_id")
+    debit_entries = relationship("JournalEntry", foreign_keys="JournalEntry.debit_account_id", viewonly=True)
+    credit_entries = relationship("JournalEntry", foreign_keys="JournalEntry.credit_account_id", viewonly=True)
 
 class JournalEntry(Base):
     __tablename__ = 'journal_entries'

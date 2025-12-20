@@ -25,7 +25,7 @@ def manage_chart_of_accounts(db_manager):
             })
         
         df = pd.DataFrame(account_data)
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width="stretch")
     else:
         st.info("No accounts found. Add your first account below.")
     
