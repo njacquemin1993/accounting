@@ -11,7 +11,6 @@ from file_management_ui import file_management_button
 
 def get_database():
     db_manager = DatabaseManager()
-    db_manager.initialize_default_accounts()
     return db_manager
 
 
