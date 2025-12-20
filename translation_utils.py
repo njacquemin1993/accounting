@@ -43,25 +43,33 @@ def t(key: str) -> str:
 
 
 def language_selector():
-    """Display language selector in sidebar."""
+    """Display language selector with flags."""
     init_language()
 
     languages = get_available_languages()
     current_lang = get_current_language()
 
+    # Language options with flag emojis
+    language_options = {
+        "en": "🇺🇸 English",
+        "fr": "🇫🇷 Français", 
+        "de": "🇩🇪 Deutsch"
+    }
+
     # Find current language display name
-    current_display = languages.get(current_lang, "English")
+    current_display = language_options.get(current_lang, "🇺🇸 English")
 
     selected_display = st.selectbox(
-        t("language_selector"),
-        list(languages.values()),
-        index=list(languages.values()).index(current_display),
-        key="language_selectbox"
+        "",  # No label for cleaner look
+        list(language_options.values()),
+        index=list(language_options.values()).index(current_display),
+        key="language_selectbox",
+        label_visibility="collapsed"
     )
 
     # Find selected language code and update if changed
     selected_lang = None
-    for code, display in languages.items():
+    for code, display in language_options.items():
         if display == selected_display:
             selected_lang = code
             break

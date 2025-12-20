@@ -25,11 +25,14 @@ def get_database():
 def main():
     st.set_page_config(page_title="Accounting System", page_icon="💰", layout="wide")
 
-    st.title(f"💰 {t('app_title')}")
-
-    # Add language selector in sidebar
-    with st.sidebar:
-        st.markdown("---")
+    # Header with title and language selector
+    header_col1, header_col2 = st.columns([3, 1])
+    
+    with header_col1:
+        st.title(f"💰 {t('app_title')}")
+    
+    with header_col2:
+        st.markdown("<br>", unsafe_allow_html=True)  # Add some vertical spacing
         language_selector()
 
     # Initialize database
@@ -55,7 +58,7 @@ def main():
     if current_url_tab != str(st.session_state.active_tab):
         st.query_params["tab"] = str(st.session_state.active_tab)
 
-    # Create custom tab navigation
+    # Create custom tab navigation with better spacing
     tab_names = [
         t("tab_chart_of_accounts"),
         t("tab_journal_entries"),
@@ -64,6 +67,9 @@ def main():
         t("tab_balance_sheet"),
     ]
 
+    # Create a container for tabs and language selector alignment
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     # Create tab buttons
     cols = st.columns(len(tab_names))
     for i, tab_name in enumerate(tab_names):
