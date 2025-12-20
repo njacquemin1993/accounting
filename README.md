@@ -4,16 +4,23 @@ A simple accounting application built with Python, Streamlit, and SQLAlchemy.
 
 ## Features
 
-- **Chart of Accounts Management**: Add and manage accounts categorized as Active (Assets), Passive (Liabilities/Equity), Expenses, and Products (Revenue)
-- **Journal Entries**: Record double-entry bookkeeping transactions
-- **Account Balances**: View balances for all accounts with filtering options
+- **Multi-language Support**: Available in English, French, and German
+- **Chart of Accounts Management**: Add, edit, and manage accounts categorized as Active (Assets), Passive (Liabilities/Equity), Expenses, and Products (Revenue)
+- **Journal Entries**: Record double-entry bookkeeping transactions with validation
+- **Account Balances**: View balances for all accounts with filtering and detailed transaction history
 - **Balance Sheet**: Generate and view balance sheet with automatic balance validation
+- **Result Sheet (Income Statement)**: View revenue and expenses with net income calculation
+- **Excel Export**: Export all accounting data to formatted Excel workbooks
+- **Database Management**: Backup, restore, and manage database files
+- **Year-End Closing**: Automated year-end closing with comprehensive backup packages
 
 ## Technologies Used
 
-- **Frontend**: Streamlit
+- **Frontend**: Streamlit for web interface
 - **Database**: SQLite with SQLAlchemy ORM
-- **Additional Libraries**: Pandas for data manipulation
+- **Data Processing**: Pandas for data manipulation and analysis
+- **Export**: XlsxWriter for Excel report generation
+- **Visualization**: Plotly for charts (if needed)
 
 ## Installation
 
@@ -32,18 +39,37 @@ A simple accounting application built with Python, Streamlit, and SQLAlchemy.
 
 2. Open your web browser and navigate to the URL shown in the terminal (usually `http://localhost:8501`)
 
+3. Select your preferred language from the dropdown (English, French, or German)
+
 ## Application Structure
 
-- `app.py`: Main Streamlit application entry point
-- `database.py`: SQLAlchemy models and database configuration
-- `accounting_utils.py`: Utility functions for accounting calculations
-- `tabs/`: Directory containing tab modules
-  - `chart_of_accounts.py`: Chart of Accounts tab functionality
-  - `journal_entries.py`: Journal Entries tab functionality
-  - `account_balances.py`: Account Balances tab functionality
-  - `result_sheet.py`: Result Sheet (Income Statement) tab functionality
-  - `balance_sheet.py`: Balance Sheet tab functionality
-- `requirements.txt`: Python dependencies
+The application follows a modular architecture with clear separation of concerns:
+
+### Core Modules
+- `app.py`: Main Streamlit application entry point with navigation
+- `database.py`: SQLAlchemy models (Account, JournalEntry) and database configuration
+- `constants.py`: Centralized configuration values and magic numbers
+- `helpers.py`: Common helper functions for validation and formatting
+- `accounting_utils.py`: Business logic for accounting calculations (balance, trial balance, etc.)
+- `translation_utils.py`: Multi-language support utilities (English, French, German)
+- `translations.py`: Translation strings for all supported languages
+
+### Page Modules (`pages/`)
+- `chart_of_accounts_page.py`: Chart of Accounts management
+- `journal_entries_page.py`: Journal entry recording and editing
+- `account_balances_page.py`: Account balance viewing with filtering
+- `result_sheet_page.py`: Income Statement (Result Sheet) generation
+- `balance_sheet_page.py`: Balance Sheet generation with validation
+
+### File Management
+- `file_manager.py`: Database backup, restore, and file operations
+- `file_management_ui.py`: UI components for file management and year-end closing
+- `excel_utils.py`: Excel formatting utilities and configuration
+- `excel_export.py`: Excel export logic for all accounting reports
+
+### Database
+- `accounting.db`: SQLite database (auto-created on first run)
+- `requirements.txt`: Python package dependencies
 
 ## Default Chart of Accounts
 
@@ -100,12 +126,24 @@ The application uses SQLite for data storage. The database file (`accounting.db`
 - Shows Assets on the left, Liabilities and Equity on the right
 - Automatic balance validation (Assets = Liabilities + Equity)
 
+## Code Quality
+
+This project follows professional coding standards:
+- **No Magic Numbers**: All configuration values centralized in `constants.py`
+- **DRY Principle**: Common functionality extracted into helper modules
+- **Separation of Concerns**: Clear boundaries between UI, business logic, and data layers
+- **Modular Architecture**: Focused modules with single responsibilities
+- **Type Hints**: Function signatures include type information where appropriate
+- **Documentation**: Functions include docstrings explaining purpose and parameters
+
+See `REFACTORING_SUMMARY.md` for details on code quality improvements.
+
 ## Contributing
 
 This is a simple educational project. Feel free to fork and enhance it with additional features like:
-- Income statement generation
 - Cash flow statement
 - Account reconciliation
-- User authentication
-- Multi-company support
-- Advanced reporting
+- User authentication and multi-user support
+- Multi-company/multi-entity support
+- Advanced reporting and analytics
+- Budget tracking and variance analysis
