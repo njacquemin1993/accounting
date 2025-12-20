@@ -20,17 +20,17 @@ def show_account_details_dialog(session, account_id, account_label):
     """Show account details in a dialog."""
     # Get account entries
     entries_df = get_account_entries(session, account_id)
-    
+
     if not entries_df.empty:
         # Display account balance
         account_balance = get_account_balance(session, account_id)
         st.metric(t("account_balance"), f"CHF {account_balance:,.2f}")
-        
+
         st.subheader(f"{t('entries_for')} {account_label}")
-        
+
         # Prepare display dataframe with formatted amount column
         display_df = entries_df.copy()
-                
+
         # Select and reorder columns for display, then translate headers
         display_df = display_df[
             ["Date", "Description", "Counterparty", "Debit", "Credit"]
@@ -44,12 +44,12 @@ def show_account_details_dialog(session, account_id, account_label):
                 "Counterparty": t("counterparty"),
             }
         )
-        
+
         # Display using st.dataframe for scrollable content in dialog
         st.dataframe(display_df, use_container_width=True)
     else:
         st.info(t("no_entries_found"))
-    
+
     # Close button
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
@@ -130,38 +130,40 @@ if not trial_balance.empty:
     )
 
     # Format the balance column
-    display_df[t("balance")] = display_df[t("balance")].apply(
-        lambda x: f"CHF {x:,.2f}"
-    )
+    display_df[t("balance")] = display_df[t("balance")].apply(lambda x: f"CHF {x:,.2f}")
 
     # Check for clear selection flag
-    if st.session_state.get('clear_selection', False):
+    if st.session_state.get("clear_selection", False):
         st.session_state.clear_selection = False
         # Reset the dataframe key to clear selection
-        if 'account_balances_table' in st.session_state:
-            del st.session_state['account_balances_table']
+        if "account_balances_table" in st.session_state:
+            del st.session_state["account_balances_table"]
         st.rerun()
 
     # Display the dataframe with selection enabled
     selected_data = st.dataframe(
-        display_df, 
+        display_df,
         width="stretch",
         selection_mode="single-row",
         on_select="rerun",
-        key="account_balances_table"
+        key="account_balances_table",
     )
 
     # Check if a row is selected and show details in popup
     if selected_data.selection.rows:
         selected_row_index = selected_data.selection.rows[0]
         # Get the corresponding account ID from the filtered dataframe
-        selected_account_id = filtered_df.iloc[selected_row_index]["Account ID"].tolist()
+        selected_account_id = filtered_df.iloc[selected_row_index][
+            "Account ID"
+        ].tolist()
         selected_account_code = filtered_df.iloc[selected_row_index]["Account Code"]
         selected_account_name = filtered_df.iloc[selected_row_index]["Account Name"]
         selected_account_label = f"{selected_account_code} - {selected_account_name}"
-        
+
         # Show the account details dialog
-        show_account_details_dialog(session, selected_account_id, selected_account_label)
+        show_account_details_dialog(
+            session, selected_account_id, selected_account_label
+        )
 
 else:
     st.info(t("no_balances_display"))

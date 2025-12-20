@@ -36,12 +36,8 @@ session = db_manager.get_session()
 income_statement_data = get_income_statement_data(session)
 
 # Calculate table heights to align totals
-products_rows = (
-    len(income_statement_data["products"]) + 2
-)  # products + blank + total
-expenses_rows = (
-    len(income_statement_data["expenses"]) + 2
-)  # expenses + blank + total
+products_rows = len(income_statement_data["products"]) + 2  # products + blank + total
+expenses_rows = len(income_statement_data["expenses"]) + 2  # expenses + blank + total
 
 col1, col2 = st.columns(2)
 
@@ -62,9 +58,7 @@ with col1:
         if products_rows < expenses_rows:
             blank_lines_needed = expenses_rows - products_rows
             for _ in range(blank_lines_needed):
-                products_data.append(
-                    {t("account_column"): "", t("amount_column"): ""}
-                )
+                products_data.append({t("account_column"): "", t("amount_column"): ""})
 
         # Add spacing and total
         products_data.append({t("account_column"): "", t("amount_column"): ""})
@@ -101,9 +95,7 @@ with col2:
         if expenses_rows < products_rows:
             blank_lines_needed = products_rows - expenses_rows
             for _ in range(blank_lines_needed):
-                expenses_data.append(
-                    {t("account_column"): "", t("amount_column"): ""}
-                )
+                expenses_data.append({t("account_column"): "", t("amount_column"): ""})
 
         # Add spacing and total
         expenses_data.append({t("account_column"): "", t("amount_column"): ""})

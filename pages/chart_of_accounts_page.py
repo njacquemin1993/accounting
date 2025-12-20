@@ -24,19 +24,19 @@ def validate_account_code(account_code: str, category: str) -> tuple[bool, str]:
         code_num = int(account_code)
     except ValueError:
         return False, t("account_code_must_be_numeric")
-    
+
     validation_rules = {
         "Active": (1000, 1999, t("account_code_range_active")),
         "Passive": (2000, 2999, t("account_code_range_passive")),
         "Expenses": (3000, 3999, t("account_code_range_expenses")),
         "Products": (6000, 6999, t("account_code_range_products")),
     }
-    
+
     if category in validation_rules:
         min_code, max_code, error_msg = validation_rules[category]
         if not (min_code <= code_num <= max_code):
             return False, error_msg
-    
+
     return True, ""
 
 
@@ -47,26 +47,34 @@ def show_edit_account_dialog(session, account_id):
     if not account:
         st.error(t("account_not_found"))
         return
-    
+
     # Form fields with current values
-    edit_code = st.text_input(t("account_code"), value=account.account_code, help=t("account_code_help"))
-    edit_name = st.text_input(t("account_name"), value=account.account_name, help=t("account_name_help"))
-    
+    edit_code = st.text_input(
+        t("account_code"), value=account.account_code, help=t("account_code_help")
+    )
+    edit_name = st.text_input(
+        t("account_name"), value=account.account_name, help=t("account_name_help")
+    )
+
     # Category selection with current value
     categories = [t("active"), t("passive"), t("expenses"), t("products")]
     category_map = {
         "Active": t("active"),
-        "Passive": t("passive"), 
+        "Passive": t("passive"),
         "Expenses": t("expenses"),
-        "Products": t("products")
+        "Products": t("products"),
     }
     current_category_translated = category_map.get(account.category, t("active"))
-    current_index = categories.index(current_category_translated) if current_category_translated in categories else 0
-    
+    current_index = (
+        categories.index(current_category_translated)
+        if current_category_translated in categories
+        else 0
+    )
+
     edit_category = st.selectbox(t("category"), categories, index=current_index)
-    
+
     col1, col2 = st.columns([1, 1])
-    
+
     with col1:
         if st.button(t("update_account"), use_container_width=True, type="primary"):
             if edit_code and edit_name:
@@ -78,13 +86,15 @@ def show_edit_account_dialog(session, account_id):
                     t("products"): "Products",
                 }
                 db_category = reverse_category_map.get(edit_category, "Active")
-                
+
                 # Validate account code for the category
-                is_valid, validation_error = validate_account_code(edit_code, db_category)
+                is_valid, validation_error = validate_account_code(
+                    edit_code, db_category
+                )
                 if not is_valid:
                     st.error(validation_error)
                     return
-                
+
                 # Check if account code already exists (excluding current account)
                 existing = (
                     session.query(Account)
@@ -102,7 +112,7 @@ def show_edit_account_dialog(session, account_id):
                     st.rerun()
             else:
                 st.error(t("fill_all_fields"))
-    
+
     with col2:
         if st.button(t("cancel"), use_container_width=True):
             st.rerun()
@@ -115,31 +125,38 @@ def show_delete_account_dialog(session, account_id):
     if not account:
         st.error(t("account_not_found"))
         return
-    
+
     # Check if account has any journal entries
     from database import JournalEntry
-    entries_count = session.query(JournalEntry).filter(
-        (JournalEntry.debit_account_id == account_id) | 
-        (JournalEntry.credit_account_id == account_id)
-    ).count()
-    
+
+    entries_count = (
+        session.query(JournalEntry)
+        .filter(
+            (JournalEntry.debit_account_id == account_id)
+            | (JournalEntry.credit_account_id == account_id)
+        )
+        .count()
+    )
+
     st.write(f"**{t('code')}:** {account.account_code}")
     st.write(f"**{t('name')}:** {account.account_name}")
     st.write(f"**{t('category')}:** {account.category}")
-    
+
     if entries_count > 0:
         st.warning(f"{t('account_has_entries')}: {entries_count}")
         st.info(t("deactivate_instead_of_delete"))
-        
+
         col1, col2, col3 = st.columns([1, 1, 1])
-        
+
         with col1:
-            if st.button(t("deactivate_account"), use_container_width=True, type="primary"):
+            if st.button(
+                t("deactivate_account"), use_container_width=True, type="primary"
+            ):
                 account.is_active = False
                 session.commit()
                 st.success(t("account_deactivated_success"))
                 st.rerun()
-        
+
         with col2:
             if st.button(t("force_delete"), use_container_width=True, type="secondary"):
                 st.warning(t("force_delete_warning"))
@@ -148,22 +165,22 @@ def show_delete_account_dialog(session, account_id):
                     session.commit()
                     st.success(t("account_deleted"))
                     st.rerun()
-        
+
         with col3:
             if st.button(t("cancel"), use_container_width=True):
                 st.rerun()
     else:
         st.warning(t("confirm_delete_message"))
-        
+
         col1, col2 = st.columns([1, 1])
-        
+
         with col1:
             if st.button(t("confirm_delete"), use_container_width=True, type="primary"):
                 session.delete(account)
                 session.commit()
                 st.success(t("account_deleted"))
                 st.rerun()
-        
+
         with col2:
             if st.button(t("cancel"), use_container_width=True):
                 st.rerun()
@@ -178,9 +195,9 @@ def show_add_account_dialog(session):
     category = st.selectbox(
         t("category"), [t("active"), t("passive"), t("expenses"), t("products")]
     )
-    
+
     col1, col2 = st.columns([1, 1])
-    
+
     with col1:
         if st.button(t("add_account"), use_container_width=True, type="primary"):
             if account_code and account_name:
@@ -192,13 +209,15 @@ def show_add_account_dialog(session):
                     t("products"): "Products",
                 }
                 db_category = category_map.get(category, "Active")
-                
+
                 # Validate account code for the category
-                is_valid, validation_error = validate_account_code(account_code, db_category)
+                is_valid, validation_error = validate_account_code(
+                    account_code, db_category
+                )
                 if not is_valid:
                     st.error(validation_error)
                     return
-                
+
                 # Check if account code already exists
                 existing = (
                     session.query(Account)
@@ -219,7 +238,7 @@ def show_add_account_dialog(session):
                     st.rerun()
             else:
                 st.error(t("fill_all_fields"))
-    
+
     with col2:
         if st.button(t("cancel"), use_container_width=True):
             st.rerun()
@@ -264,25 +283,26 @@ if accounts:
         for account in accounts:
             account_label = f"{account.account_code} - {account.account_name}"
             account_options[account_label] = account.id
-        
+
         if account_options:
             selected_account_label = st.selectbox(
-                t("select_account_to_modify"),
-                list(account_options.keys())
+                t("select_account_to_modify"), list(account_options.keys())
             )
-            
+
             if selected_account_label:
                 selected_account_id = account_options[selected_account_label]
-                
+
                 # Edit and Delete buttons
                 edit_col, delete_col = st.columns(2)
-                
+
                 with edit_col:
                     if st.button(t("edit_account"), use_container_width=True):
                         show_edit_account_dialog(session, selected_account_id)
-                
+
                 with delete_col:
-                    if st.button(t("delete_account"), type="secondary", use_container_width=True):
+                    if st.button(
+                        t("delete_account"), type="secondary", use_container_width=True
+                    ):
                         show_delete_account_dialog(session, selected_account_id)
 
 st.markdown("---")
@@ -297,46 +317,53 @@ accounts = (
 
 if accounts:
     # Group accounts by category
-    accounts_by_category = {
-        "Active": [],
-        "Passive": [],
-        "Expenses": [],
-        "Products": []
-    }
-    
+    accounts_by_category = {"Active": [], "Passive": [], "Expenses": [], "Products": []}
+
     for account in accounts:
         if account.category in accounts_by_category:
             accounts_by_category[account.category].append(account)
-    
+
     # Calculate table heights to align them
-    active_rows = len(accounts_by_category["Active"]) if accounts_by_category["Active"] else 1  # 1 for empty message
-    passive_rows = len(accounts_by_category["Passive"]) if accounts_by_category["Passive"] else 1
-    products_rows = len(accounts_by_category["Products"]) if accounts_by_category["Products"] else 1
-    expenses_rows = len(accounts_by_category["Expenses"]) if accounts_by_category["Expenses"] else 1
-    
+    active_rows = (
+        len(accounts_by_category["Active"]) if accounts_by_category["Active"] else 1
+    )  # 1 for empty message
+    passive_rows = (
+        len(accounts_by_category["Passive"]) if accounts_by_category["Passive"] else 1
+    )
+    products_rows = (
+        len(accounts_by_category["Products"]) if accounts_by_category["Products"] else 1
+    )
+    expenses_rows = (
+        len(accounts_by_category["Expenses"]) if accounts_by_category["Expenses"] else 1
+    )
+
     # Create 2x2 layout
     col1, col2 = st.columns(2)
-    
+
     with col1:
         # Active accounts
         st.subheader(f"📈 {t('active')}")
         if accounts_by_category["Active"]:
             active_data = []
             for account in accounts_by_category["Active"]:
-                active_data.append({
-                    t("code"): account.account_code,
-                    t("name"): account.account_name,
-                })
-            
+                active_data.append(
+                    {
+                        t("code"): account.account_code,
+                        t("name"): account.account_name,
+                    }
+                )
+
             # Add blank lines if active table is shorter than passive
             if active_rows < passive_rows:
                 blank_lines_needed = passive_rows - active_rows
                 for _ in range(blank_lines_needed):
-                    active_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
-            
+                    active_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
+
             active_df = pd.DataFrame(active_data)
             st.table(active_df)
         else:
@@ -346,35 +373,41 @@ if accounts:
                 # Create empty DataFrame with blank lines to match passive height
                 empty_data = []
                 for _ in range(passive_rows - 1):
-                    empty_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
+                    empty_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
                 if empty_data:
                     empty_df = pd.DataFrame(empty_data)
                     st.table(empty_df)
-        
+
         st.markdown("---")
-        
+
         # Products accounts
         st.subheader(f"💰 {t('products')}")
         if accounts_by_category["Products"]:
             products_data = []
             for account in accounts_by_category["Products"]:
-                products_data.append({
-                    t("code"): account.account_code,
-                    t("name"): account.account_name,
-                })
-            
+                products_data.append(
+                    {
+                        t("code"): account.account_code,
+                        t("name"): account.account_name,
+                    }
+                )
+
             # Add blank lines if products table is shorter than expenses
             if products_rows < expenses_rows:
                 blank_lines_needed = expenses_rows - products_rows
                 for _ in range(blank_lines_needed):
-                    products_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
-            
+                    products_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
+
             products_df = pd.DataFrame(products_data)
             st.table(products_df)
         else:
@@ -384,34 +417,40 @@ if accounts:
                 # Create empty DataFrame with blank lines to match expenses height
                 empty_data = []
                 for _ in range(expenses_rows - 1):
-                    empty_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
+                    empty_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
                 if empty_data:
                     empty_df = pd.DataFrame(empty_data)
                     st.table(empty_df)
-    
+
     with col2:
         # Passive accounts
         st.subheader(f"📉 {t('passive')}")
         if accounts_by_category["Passive"]:
             passive_data = []
             for account in accounts_by_category["Passive"]:
-                passive_data.append({
-                    t("code"): account.account_code,
-                    t("name"): account.account_name,
-                })
-            
+                passive_data.append(
+                    {
+                        t("code"): account.account_code,
+                        t("name"): account.account_name,
+                    }
+                )
+
             # Add blank lines if passive table is shorter than active
             if passive_rows < active_rows:
                 blank_lines_needed = active_rows - passive_rows
                 for _ in range(blank_lines_needed):
-                    passive_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
-            
+                    passive_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
+
             passive_df = pd.DataFrame(passive_data)
             st.table(passive_df)
         else:
@@ -421,35 +460,41 @@ if accounts:
                 # Create empty DataFrame with blank lines to match active height
                 empty_data = []
                 for _ in range(active_rows - 1):
-                    empty_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
+                    empty_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
                 if empty_data:
                     empty_df = pd.DataFrame(empty_data)
                     st.table(empty_df)
-        
+
         st.markdown("---")
-        
+
         # Expenses accounts
         st.subheader(f"💸 {t('expenses')}")
         if accounts_by_category["Expenses"]:
             expenses_data = []
             for account in accounts_by_category["Expenses"]:
-                expenses_data.append({
-                    t("code"): account.account_code,
-                    t("name"): account.account_name,
-                })
-            
+                expenses_data.append(
+                    {
+                        t("code"): account.account_code,
+                        t("name"): account.account_name,
+                    }
+                )
+
             # Add blank lines if expenses table is shorter than products
             if expenses_rows < products_rows:
                 blank_lines_needed = products_rows - expenses_rows
                 for _ in range(blank_lines_needed):
-                    expenses_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
-            
+                    expenses_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
+
             expenses_df = pd.DataFrame(expenses_data)
             st.table(expenses_df)
         else:
@@ -459,10 +504,12 @@ if accounts:
                 # Create empty DataFrame with blank lines to match products height
                 empty_data = []
                 for _ in range(products_rows - 1):
-                    empty_data.append({
-                        t("code"): "",
-                        t("name"): "",
-                    })
+                    empty_data.append(
+                        {
+                            t("code"): "",
+                            t("name"): "",
+                        }
+                    )
                 if empty_data:
                     empty_df = pd.DataFrame(empty_data)
                     st.table(empty_df)

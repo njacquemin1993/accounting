@@ -11,14 +11,14 @@ def init_language():
     # Check if language is in URL query parameters
     query_params = st.query_params
     url_language = query_params.get("lang", None)
-    
+
     if "language" not in st.session_state:
         # Use URL language if available, otherwise default to English
         if url_language and url_language in ["en", "fr", "de"]:
             st.session_state.language = url_language
         else:
             st.session_state.language = "en"
-    
+
     # Update URL to reflect current language if it's different
     current_url_lang = query_params.get("lang", None)
     if current_url_lang != st.session_state.language:
@@ -46,15 +46,11 @@ def language_selector():
     """Display language selector with flags."""
     init_language()
 
-    languages = get_available_languages()
+    get_available_languages()
     current_lang = get_current_language()
 
     # Language options with flag emojis
-    language_options = {
-        "en": "🇺🇸 English",
-        "fr": "🇫🇷 Français", 
-        "de": "🇩🇪 Deutsch"
-    }
+    language_options = {"en": "🇺🇸 English", "fr": "🇫🇷 Français", "de": "🇩🇪 Deutsch"}
 
     # Find current language display name
     current_display = language_options.get(current_lang, "🇺🇸 English")
@@ -73,7 +69,7 @@ def language_selector():
         if display == selected_display:
             selected_lang = code
             break
-    
+
     # Update language and rerun to refresh translations
     if selected_lang and selected_lang != current_lang:
         set_language(selected_lang)
