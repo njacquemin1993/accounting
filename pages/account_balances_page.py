@@ -15,6 +15,50 @@ def get_database():
     return db_manager
 
 
+@st.dialog(t("account_details"), width="large")
+def show_account_details_dialog(session, account_id, account_label):
+    """Show account details in a dialog."""
+    # Get account entries
+    entries_df = get_account_entries(session, account_id)
+    
+    if not entries_df.empty:
+        # Display account balance
+        account_balance = get_account_balance(session, account_id)
+        st.metric(t("account_balance"), f"CHF {account_balance:,.2f}")
+        
+        st.subheader(f"{t('entries_for')} {account_label}")
+        
+        # Prepare display dataframe with formatted amount column
+        display_df = entries_df.copy()
+                
+        # Select and reorder columns for display, then translate headers
+        display_df = display_df[
+            ["Date", "Description", "Counterparty", "Debit", "Credit"]
+        ]
+        display_df = display_df.rename(
+            columns={
+                "Date": t("date"),
+                "Description": t("description"),
+                "Debit": t("debit"),
+                "Credit": t("credit"),
+                "Counterparty": t("counterparty"),
+            }
+        )
+        
+        # Display using st.dataframe for scrollable content in dialog
+        st.dataframe(display_df, use_container_width=True)
+    else:
+        st.info(t("no_entries_found"))
+    
+    # Close button
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        if st.button(t("close"), use_container_width=True, type="primary"):
+            # Clear the selection by setting a session state flag
+            st.session_state.clear_selection = True
+            st.rerun()
+
+
 # Page header with language selector
 header_col1, header_col2 = st.columns([3, 1])
 
@@ -90,65 +134,34 @@ if not trial_balance.empty:
         lambda x: f"CHF {x:,.2f}"
     )
 
-    # Display the dataframe
-    st.dataframe(display_df, width="stretch")
+    # Check for clear selection flag
+    if st.session_state.get('clear_selection', False):
+        st.session_state.clear_selection = False
+        # Reset the dataframe key to clear selection
+        if 'account_balances_table' in st.session_state:
+            del st.session_state['account_balances_table']
+        st.rerun()
 
-    # Account selection for details
-    st.markdown("---")
-    st.subheader(t("account_details"))
+    # Display the dataframe with selection enabled
+    selected_data = st.dataframe(
+        display_df, 
+        width="stretch",
+        selection_mode="single-row",
+        on_select="rerun",
+        key="account_balances_table"
+    )
 
-    # Create account selection dropdown
-    account_options = {}
-    for _, row in filtered_df.iterrows():
-        account_label = f"{row['Account Code']} - {row['Account Name']}"
-        account_options[account_label] = row["Account ID"]
-
-    if account_options:
-        selected_account_label = st.selectbox(
-            t("select_account"), list(account_options.keys())
-        )
-
-        if selected_account_label:
-            selected_account_id = account_options[selected_account_label]
-
-            # Get account entries
-            entries_df = get_account_entries(session, selected_account_id)
-
-            if not entries_df.empty:
-                # Display account balance
-                account_balance = get_account_balance(session, selected_account_id)
-                st.metric(t("account_balance"), f"CHF {account_balance:,.2f}")
-
-                st.subheader(f"{t('entries_for')} {selected_account_label}")
-
-                # Prepare display dataframe with formatted amount column
-                display_df = entries_df.copy()
-
-                # Create a single Amount column with + for debits and - for credits
-                display_df["Amount"] = display_df.apply(
-                    lambda row: f"+CHF {row['Debit']:,.2f}"
-                    if row["Debit"] > 0
-                    else f"-CHF {row['Credit']:,.2f}",
-                    axis=1,
-                )
-
-                # Select and reorder columns for display, then translate headers
-                display_df = display_df[
-                    ["Date", "Description", "Counterparty", "Amount"]
-                ]
-                display_df = display_df.rename(
-                    columns={
-                        "Date": t("date"),
-                        "Description": t("description"),
-                        "Counterparty": t("counterparty"),
-                        "Amount": t("amount"),
-                    }
-                )
-
-                # Display using st.table for better formatting
-                st.table(display_df)
-            else:
-                st.info(t("no_entries_found"))
+    # Check if a row is selected and show details in popup
+    if selected_data.selection.rows:
+        selected_row_index = selected_data.selection.rows[0]
+        # Get the corresponding account ID from the filtered dataframe
+        selected_account_id = filtered_df.iloc[selected_row_index]["Account ID"].tolist()
+        selected_account_code = filtered_df.iloc[selected_row_index]["Account Code"]
+        selected_account_name = filtered_df.iloc[selected_row_index]["Account Name"]
+        selected_account_label = f"{selected_account_code} - {selected_account_name}"
+        
+        # Show the account details dialog
+        show_account_details_dialog(session, selected_account_id, selected_account_label)
 
 else:
     st.info(t("no_balances_display"))
