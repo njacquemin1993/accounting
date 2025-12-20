@@ -7,7 +7,7 @@ from translation_utils import t
 
 
 def main():
-    st.set_page_config(page_title="Accounting System", page_icon="💰", layout="wide")
+    st.set_page_config(page_title=t("app_title"), page_icon="💰", layout="wide")
 
     # Create navigation pages - each as its own top-level tab
     pages = [
