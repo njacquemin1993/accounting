@@ -10,6 +10,7 @@ from tabs import (
     view_result_sheet,
     view_balance_sheet
 )
+from translation_utils import t, language_selector
 
 # Initialize database
 @st.cache_resource
@@ -25,18 +26,23 @@ def main():
         layout="wide"
     )
     
-    st.title("💰 Simple Accounting System")
+    st.title(f"💰 {t('app_title')}")
+    
+    # Add language selector in sidebar
+    with st.sidebar:
+        st.markdown("---")
+        language_selector()
     
     # Initialize database
     db_manager = get_database()
     
     # Create tabs
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 Chart of Accounts", 
-        "📝 Journal Entries", 
-        "⚖️ Account Balances", 
-        "📈 Result Sheet",
-        "📋 Balance Sheet",
+        t("tab_chart_of_accounts"), 
+        t("tab_journal_entries"), 
+        t("tab_account_balances"), 
+        t("tab_result_sheet"),
+        t("tab_balance_sheet"),
     ])
     
     with tab1:

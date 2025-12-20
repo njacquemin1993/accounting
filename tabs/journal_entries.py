@@ -6,10 +6,11 @@ import pandas as pd
 from datetime import datetime, date
 from database import Account, JournalEntry
 from accounting_utils import validate_journal_entry
+from translation_utils import t
 
 def manage_journal_entries(db_manager):
     """Tab for managing journal entries."""
-    st.header("Journal Entries")
+    st.header(t("journal_entries"))
     
     session = db_manager.get_session()
     
@@ -17,27 +18,27 @@ def manage_journal_entries(db_manager):
     entries = session.query(JournalEntry).order_by(JournalEntry.date.desc()).limit(20).all()
     
     if entries:
-        st.subheader("Recent Journal Entries")
+        st.subheader(t("recent_journal_entries"))
         entry_data = []
         for entry in entries:
             entry_data.append({
-                'Date': entry.date.strftime('%Y-%m-%d'),
-                'Description': entry.description,
-                'Debit Account': f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
-                'Credit Account': f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
-                'Amount': f"CHF {entry.amount:,.2f}"
+                t('date'): entry.date.strftime('%Y-%m-%d'),
+                t('description'): entry.description,
+                t('debit_account'): f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
+                t('credit_account'): f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
+                t('amount'): f"CHF {entry.amount:,.2f}"
             })
         
         df = pd.DataFrame(entry_data)
         st.dataframe(df, width="stretch")
     
-    st.subheader("Add New Journal Entry")
+    st.subheader(t("add_new_journal_entry"))
     
     # Get active accounts for dropdowns
     active_accounts = session.query(Account).filter(Account.is_active == True).order_by(Account.account_code).all()
     
     if len(active_accounts) < 2:
-        st.warning("You need at least 2 active accounts to create journal entries.")
+        st.warning(t("need_two_accounts"))
         session.close()
         return
     
@@ -47,17 +48,17 @@ def manage_journal_entries(db_manager):
     col1, col2, col3, col4, col5, col6 = st.columns(6, vertical_alignment='bottom')
     
     with col1:
-        entry_date = st.date_input("Date", value=date.today())
+        entry_date = st.date_input(t("date"), value=date.today())
     with col2:
-        description = st.text_input("Description", help="Brief description of the transaction")        
+        description = st.text_input(t("description"), help="Brief description of the transaction")        
     with col3:
-        debit_account = st.selectbox("Debit Account", account_list)
+        debit_account = st.selectbox(t("debit_account"), account_list)
     with col4:
-        credit_account = st.selectbox("Credit Account", account_list)
+        credit_account = st.selectbox(t("credit_account"), account_list)
     with col5:
-        amount = st.number_input("Amount", min_value=0.01, step=0.01, format="%.2f")
+        amount = st.number_input(t("amount"), min_value=0.01, step=0.01, format="%.2f", help=t("amount_help"))
     with col6:
-        if st.button("Add Journal Entry"):
+        if st.button(t("add_entry")):
             if description and amount > 0:
                 debit_account_id = account_options[debit_account]
                 credit_account_id = account_options[credit_account]
@@ -74,12 +75,12 @@ def manage_journal_entries(db_manager):
                     )
                     session.add(new_entry)
                     session.commit()
-                    st.success("Journal entry added successfully!")
+                    st.success(t("journal_entry_added"))
                     st.rerun()
                 else:
                     for error in errors:
                         st.error(error)
             else:
-                st.error("Please fill in all required fields and ensure amount is greater than zero.")
+                st.error(t("invalid_entry"))
     
     session.close()
