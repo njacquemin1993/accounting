@@ -36,8 +36,24 @@ def main():
     db_manager = get_database()
 
     # Initialize active tab in session state
+    query_params = st.query_params
+    url_tab = query_params.get("tab", None)
+    
     if "active_tab" not in st.session_state:
-        st.session_state.active_tab = 0
+        # Use URL tab if available and valid, otherwise default to 0
+        if url_tab and url_tab.isdigit():
+            tab_index = int(url_tab)
+            if 0 <= tab_index <= 4:
+                st.session_state.active_tab = tab_index
+            else:
+                st.session_state.active_tab = 0
+        else:
+            st.session_state.active_tab = 0
+    
+    # Update URL to reflect current tab if it's different
+    current_url_tab = query_params.get("tab", None)
+    if current_url_tab != str(st.session_state.active_tab):
+        st.query_params["tab"] = str(st.session_state.active_tab)
 
     # Create custom tab navigation
     tab_names = [
@@ -60,6 +76,7 @@ def main():
             )
             if button_clicked:
                 st.session_state.active_tab = i
+                st.query_params["tab"] = str(i)
                 st.rerun()
 
     st.markdown("---")

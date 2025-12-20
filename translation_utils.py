@@ -7,9 +7,22 @@ from translations import get_translation, get_available_languages
 
 
 def init_language():
-    """Initialize language in session state."""
+    """Initialize language in session state, checking URL params first."""
+    # Check if language is in URL query parameters
+    query_params = st.query_params
+    url_language = query_params.get("lang", None)
+    
     if "language" not in st.session_state:
-        st.session_state.language = "en"
+        # Use URL language if available, otherwise default to English
+        if url_language and url_language in ["en", "fr", "de"]:
+            st.session_state.language = url_language
+        else:
+            st.session_state.language = "en"
+    
+    # Update URL to reflect current language if it's different
+    current_url_lang = query_params.get("lang", None)
+    if current_url_lang != st.session_state.language:
+        st.query_params["lang"] = st.session_state.language
 
 
 def get_current_language():
@@ -19,8 +32,9 @@ def get_current_language():
 
 
 def set_language(language):
-    """Set current language in session state."""
+    """Set current language in session state and update URL."""
     st.session_state.language = language
+    st.query_params["lang"] = language
 
 
 def t(key: str) -> str:
@@ -54,5 +68,5 @@ def language_selector():
     
     # Update language and rerun to refresh translations
     if selected_lang and selected_lang != current_lang:
-        st.session_state.language = selected_lang
+        set_language(selected_lang)
         st.rerun()
