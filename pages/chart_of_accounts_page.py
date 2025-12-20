@@ -15,6 +15,31 @@ def get_database():
     return db_manager
 
 
+def validate_account_code(account_code: str, category: str) -> tuple[bool, str]:
+    """
+    Validate account code based on category.
+    Returns (is_valid, error_message)
+    """
+    try:
+        code_num = int(account_code)
+    except ValueError:
+        return False, t("account_code_must_be_numeric")
+    
+    validation_rules = {
+        "Active": (1000, 1999, t("account_code_range_active")),
+        "Passive": (2000, 2999, t("account_code_range_passive")),
+        "Expenses": (3000, 3999, t("account_code_range_expenses")),
+        "Products": (6000, 6999, t("account_code_range_products")),
+    }
+    
+    if category in validation_rules:
+        min_code, max_code, error_msg = validation_rules[category]
+        if not (min_code <= code_num <= max_code):
+            return False, error_msg
+    
+    return True, ""
+
+
 @st.dialog(t("edit_account"))
 def show_edit_account_dialog(session, account_id):
     """Show edit account dialog."""
@@ -45,6 +70,21 @@ def show_edit_account_dialog(session, account_id):
     with col1:
         if st.button(t("update_account"), use_container_width=True, type="primary"):
             if edit_code and edit_name:
+                # Map translated category back to English for validation
+                reverse_category_map = {
+                    t("active"): "Active",
+                    t("passive"): "Passive",
+                    t("expenses"): "Expenses",
+                    t("products"): "Products",
+                }
+                db_category = reverse_category_map.get(edit_category, "Active")
+                
+                # Validate account code for the category
+                is_valid, validation_error = validate_account_code(edit_code, db_category)
+                if not is_valid:
+                    st.error(validation_error)
+                    return
+                
                 # Check if account code already exists (excluding current account)
                 existing = (
                     session.query(Account)
@@ -54,15 +94,6 @@ def show_edit_account_dialog(session, account_id):
                 if existing:
                     st.error(t("account_exists"))
                 else:
-                    # Map translated category back to English for database storage
-                    reverse_category_map = {
-                        t("active"): "Active",
-                        t("passive"): "Passive",
-                        t("expenses"): "Expenses",
-                        t("products"): "Products",
-                    }
-                    db_category = reverse_category_map.get(edit_category, "Active")
-                    
                     account.account_code = edit_code
                     account.account_name = edit_name
                     account.category = db_category
@@ -153,6 +184,21 @@ def show_add_account_dialog(session):
     with col1:
         if st.button(t("add_account"), use_container_width=True, type="primary"):
             if account_code and account_name:
+                # Map translated category back to English for validation and database storage
+                category_map = {
+                    t("active"): "Active",
+                    t("passive"): "Passive",
+                    t("expenses"): "Expenses",
+                    t("products"): "Products",
+                }
+                db_category = category_map.get(category, "Active")
+                
+                # Validate account code for the category
+                is_valid, validation_error = validate_account_code(account_code, db_category)
+                if not is_valid:
+                    st.error(validation_error)
+                    return
+                
                 # Check if account code already exists
                 existing = (
                     session.query(Account)
@@ -162,15 +208,6 @@ def show_add_account_dialog(session):
                 if existing:
                     st.error(t("account_exists"))
                 else:
-                    # Map translated category back to English for database storage
-                    category_map = {
-                        t("active"): "Active",
-                        t("passive"): "Passive",
-                        t("expenses"): "Expenses",
-                        t("products"): "Products",
-                    }
-                    db_category = category_map.get(category, "Active")
-
                     new_account = Account(
                         account_code=account_code,
                         account_name=account_name,
