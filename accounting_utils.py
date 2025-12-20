@@ -13,6 +13,9 @@ def get_account_balance(session: Session, account_id: int) -> float:
     if not account:
         return 0.0
 
+    # Start with the base balance (for Active/Passive accounts)
+    base_balance = account.balance if hasattr(account, 'balance') else 0.0
+
     # Get all debit entries for this account
     debit_total = (
         session.query(JournalEntry)
@@ -34,10 +37,20 @@ def get_account_balance(session: Session, account_id: int) -> float:
     # Calculate balance based on category
     if account.category in ["Active", "Expenses"]:
         # Normal debit balance (Active = Assets, Expenses = Expenses)
-        return debit_sum - credit_sum
+        # For Active accounts, add base balance; for Expenses, base balance is always 0
+        balance_from_entries = debit_sum - credit_sum
+        if account.category == "Active":
+            return base_balance + balance_from_entries
+        else:
+            return balance_from_entries
     else:
         # Normal credit balance (Passive = Liabilities + Equity, Products = Revenue)
-        return credit_sum - debit_sum
+        # For Passive accounts, add base balance; for Products, base balance is always 0
+        balance_from_entries = credit_sum - debit_sum
+        if account.category == "Passive":
+            return base_balance + balance_from_entries
+        else:
+            return balance_from_entries
 
 
 def get_trial_balance(session: Session) -> pd.DataFrame:

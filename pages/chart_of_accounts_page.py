@@ -71,21 +71,34 @@ def show_edit_account_dialog(session, account_id):
     )
 
     edit_category = st.selectbox(t("category"), categories, index=current_index)
+    
+    # Map translated category back to English for validation
+    reverse_category_map = {
+        t("active"): "Active",
+        t("passive"): "Passive",
+        t("expenses"): "Expenses",
+        t("products"): "Products",
+    }
+    db_category = reverse_category_map.get(edit_category, "Active")
+    
+    # Show balance field only for Active and Passive accounts
+    edit_balance = 0.0
+    if db_category in ["Active", "Passive"]:
+        current_balance = account.balance if hasattr(account, 'balance') else 0.0
+        edit_balance = st.number_input(
+            t("balance"),
+            min_value=0.0,
+            step=0.01,
+            format="%.2f",
+            value=float(current_balance),
+            help=t("initial_balance_help")
+        )
 
     col1, col2 = st.columns([1, 1])
 
     with col1:
         if st.button(t("update_account"), use_container_width=True, type="primary"):
             if edit_code and edit_name:
-                # Map translated category back to English for validation
-                reverse_category_map = {
-                    t("active"): "Active",
-                    t("passive"): "Passive",
-                    t("expenses"): "Expenses",
-                    t("products"): "Products",
-                }
-                db_category = reverse_category_map.get(edit_category, "Active")
-
                 # Validate account code for the category
                 is_valid, validation_error = validate_account_code(
                     edit_code, db_category
@@ -106,6 +119,11 @@ def show_edit_account_dialog(session, account_id):
                     account.account_code = edit_code
                     account.account_name = edit_name
                     account.category = db_category
+                    # Update balance for Active/Passive accounts
+                    if db_category in ["Active", "Passive"]:
+                        account.balance = edit_balance
+                    else:
+                        account.balance = 0.0
                     session.commit()
                     st.success(t("account_updated"))
                     st.rerun()
@@ -194,21 +212,32 @@ def show_add_account_dialog(session):
     category = st.selectbox(
         t("category"), [t("active"), t("passive"), t("expenses"), t("products")]
     )
+    
+    # Map translated category back to English for validation
+    category_map = {
+        t("active"): "Active",
+        t("passive"): "Passive", 
+        t("expenses"): "Expenses",
+        t("products"): "Products",
+    }
+    db_category = category_map.get(category, "Active")
+    
+    # Show balance field only for Active and Passive accounts
+    balance = 0.0
+    if db_category in ["Active", "Passive"]:
+        balance = st.number_input(
+            t("initial_balance"),
+            min_value=0.0,
+            step=0.01,
+            format="%.2f",
+            help=t("initial_balance_help")
+        )
 
     col1, col2 = st.columns([1, 1])
 
     with col1:
         if st.button(t("add_account"), use_container_width=True, type="primary"):
             if account_code and account_name:
-                # Map translated category back to English for validation and database storage
-                category_map = {
-                    t("active"): "Active",
-                    t("passive"): "Passive",
-                    t("expenses"): "Expenses",
-                    t("products"): "Products",
-                }
-                db_category = category_map.get(category, "Active")
-
                 # Validate account code for the category
                 is_valid, validation_error = validate_account_code(
                     account_code, db_category
@@ -230,6 +259,7 @@ def show_add_account_dialog(session):
                         account_code=account_code,
                         account_name=account_name,
                         category=db_category,
+                        balance=balance,
                     )
                     session.add(new_account)
                     session.commit()
@@ -353,6 +383,7 @@ if accounts:
                     {
                         t("code"): account.account_code,
                         t("name"): account.account_name,
+                        t("balance"): f"CHF {account.balance:,.2f}" if hasattr(account, 'balance') else "CHF 0.00",
                     }
                 )
 
@@ -364,6 +395,7 @@ if accounts:
                         {
                             t("code"): "",
                             t("name"): "",
+                            t("balance"): "",
                         }
                     )
 
@@ -380,6 +412,7 @@ if accounts:
                         {
                             t("code"): "",
                             t("name"): "",
+                            t("balance"): "",
                         }
                     )
                 if empty_data:
@@ -440,6 +473,7 @@ if accounts:
                     {
                         t("code"): account.account_code,
                         t("name"): account.account_name,
+                        t("balance"): f"CHF {account.balance:,.2f}" if hasattr(account, 'balance') else "CHF 0.00",
                     }
                 )
 
@@ -451,6 +485,7 @@ if accounts:
                         {
                             t("code"): "",
                             t("name"): "",
+                            t("balance"): "",
                         }
                     )
 
@@ -467,6 +502,7 @@ if accounts:
                         {
                             t("code"): "",
                             t("name"): "",
+                            t("balance"): "",
                         }
                     )
                 if empty_data:
