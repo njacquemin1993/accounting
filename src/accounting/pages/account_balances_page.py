@@ -3,10 +3,14 @@ Account Balances page for navigation.
 """
 
 import streamlit as st
-from accounting_utils import get_trial_balance, get_account_entries, get_account_balance
-from translation_utils import t
-from helpers import format_currency
-from pages.base_page import BasePage
+from accounting.accounting_utils import (
+    get_trial_balance,
+    get_account_entries,
+    get_account_balance,
+)
+from accounting.translation_utils import t
+from accounting.helpers import format_currency
+from accounting.pages.base_page import BasePage
 
 
 @st.dialog(t("account_details"), width="large")
@@ -26,9 +30,7 @@ def show_account_details_dialog(session, account_id, account_label):
         display_df = entries_df.copy()
 
         # Select and reorder columns for display, then translate headers
-        display_df = display_df[
-            ["Date", "Description", "Counterparty", "Debit", "Credit"]
-        ]
+        display_df = display_df[["Date", "Description", "Counterparty", "Debit", "Credit"]]
         display_df = display_df.rename(
             columns={
                 "Date": t("date"),
@@ -72,14 +74,10 @@ class AccountBalancesPage(BasePage):
 
             # Get unique categories and translate them
             unique_categories = trial_balance["Category"].unique()
-            translated_categories = [
-                category_display_map.get(cat, cat) for cat in unique_categories
-            ]
+            translated_categories = [category_display_map.get(cat, cat) for cat in unique_categories]
 
             # Filter options
-            category_filter = st.selectbox(
-                t("filter_by_category"), [t("all")] + translated_categories
-            )
+            category_filter = st.selectbox(t("filter_by_category"), [t("all")] + translated_categories)
 
             # Apply filters - need to map back to database category if not "All"
             filtered_df = trial_balance.copy()
@@ -94,9 +92,7 @@ class AccountBalancesPage(BasePage):
                     filtered_df = filtered_df[filtered_df["Category"] == db_category]
 
             # Create a display dataframe without Account ID and with translated categories
-            display_df = filtered_df[
-                ["Account Code", "Account Name", "Category", "Balance"]
-            ].copy()
+            display_df = filtered_df[["Account Code", "Account Name", "Category", "Balance"]].copy()
 
             # Translate categories in display dataframe
             display_df["Category"] = display_df["Category"].map(category_display_map)
@@ -112,9 +108,7 @@ class AccountBalancesPage(BasePage):
             )
 
             # Format the balance column
-            display_df[t("balance")] = display_df[t("balance")].apply(
-                lambda x: format_currency(x)
-            )
+            display_df[t("balance")] = display_df[t("balance")].apply(lambda x: format_currency(x))
 
             # Check for clear selection flag
             if st.session_state.get("clear_selection", False):
@@ -137,23 +131,13 @@ class AccountBalancesPage(BasePage):
             if selected_data.selection.rows:
                 selected_row_index = selected_data.selection.rows[0]
                 # Get the corresponding account ID from the filtered dataframe
-                selected_account_id = filtered_df.iloc[selected_row_index][
-                    "Account ID"
-                ].tolist()
-                selected_account_code = filtered_df.iloc[selected_row_index][
-                    "Account Code"
-                ]
-                selected_account_name = filtered_df.iloc[selected_row_index][
-                    "Account Name"
-                ]
-                selected_account_label = (
-                    f"{selected_account_code} - {selected_account_name}"
-                )
+                selected_account_id = filtered_df.iloc[selected_row_index]["Account ID"].tolist()
+                selected_account_code = filtered_df.iloc[selected_row_index]["Account Code"]
+                selected_account_name = filtered_df.iloc[selected_row_index]["Account Name"]
+                selected_account_label = f"{selected_account_code} - {selected_account_name}"
 
                 # Show the account details dialog
-                show_account_details_dialog(
-                    session, selected_account_id, selected_account_label
-                )
+                show_account_details_dialog(session, selected_account_id, selected_account_label)
 
         else:
             st.info(t("no_balances_display"))

@@ -1,9 +1,9 @@
 import streamlit as st
 from streamlit.navigation.page import StreamlitPage
-from translation_utils import language_selector
+from accounting.translation_utils import language_selector
 from abc import abstractmethod
-from translation_utils import t
-from database_switcher import get_current_db_manager
+from accounting.translation_utils import t
+from accounting.database_switcher import get_current_db_manager
 
 
 class BasePage(StreamlitPage):
@@ -27,10 +27,7 @@ class BasePage(StreamlitPage):
     def _footer(self):
         """Display page footer."""
         st.markdown("---")
-        st.markdown(
-            "💼 **Accounting Application** | "
-            "[GitHub Repository](https://github.com/njacquemin1993/accounting)"
-        )
+        st.markdown("💼 **Accounting Application** | [GitHub Repository](https://github.com/njacquemin1993/accounting)")
 
     def run(self):
         """Run the page with header and content."""

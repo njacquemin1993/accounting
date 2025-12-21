@@ -146,7 +146,8 @@ TRANSLATIONS = {
         "year_end_closing_info": "This will close the current year and prepare for the next year.",
         "select_retained_earnings_account": "Select Retained Earnings Account",
         "retained_earnings_account_help": "Choose the passive account where the net income/loss will be transferred",
-        "warning_year_end_closing": "⚠️ Warning: This operation will permanently modify your database. A backup will be created first.",
+        "warning_year_end_closing": "⚠️ Warning: This operation will permanently modify your database."
+        + " A backup will be created first.",
         "year_end_steps": "Year-end closing process:",
         "step_backup": "1. Create database backup",
         "step_excel": "2. Create Excel export",
@@ -429,7 +430,8 @@ TRANSLATIONS = {
         "year_end_closing_info": "Ceci clôturera l'exercice en cours et préparera le suivant.",
         "select_retained_earnings_account": "Sélectionner le Compte de Report",
         "retained_earnings_account_help": "Choisissez le compte passif où le résultat net sera transféré",
-        "warning_year_end_closing": "⚠️ Attention : Cette opération modifiera définitivement votre base de données. Une sauvegarde sera créée au préalable.",
+        "warning_year_end_closing": "⚠️ Attention : Cette opération modifiera définitivement votre base de données."
+        + " Une sauvegarde sera créée au préalable.",
         "year_end_steps": "Processus de clôture d'exercice :",
         "step_backup": "1. Créer une sauvegarde de la base",
         "step_excel": "2. Créer un export Excel",
@@ -459,7 +461,8 @@ TRANSLATIONS = {
         "account_deleted": "Compte supprimé avec succès !",
         "account_not_found": "Compte non trouvé.",
         "account_has_entries": "Ce compte a des écritures comptables",
-        "deactivate_instead_of_delete": "Considérez la désactivation plutôt que la suppression pour préserver l'intégrité des données.",
+        "deactivate_instead_of_delete": "Considérez la désactivation plutôt que la suppression"
+        + " pour préserver l'intégrité des données.",
         "force_delete": "Forcer la Suppression",
         "force_delete_warning": "Cela supprimera le compte et toutes les écritures associées !",
         "confirm_force_delete": "Confirmer la Suppression Forcée",
@@ -477,7 +480,8 @@ TRANSLATIONS = {
         "database_created": "Nouvelle base de données créée avec succès !",
         "database_loaded": "Base de données chargée avec succès !",
         "database_error": "Erreur lors de l'opération sur la base de données.",
-        "confirm_new_database": "Cela créera une nouvelle base de données vide et perdra toutes les données actuelles. Êtes-vous sûr ?",
+        "confirm_new_database": "Cela créera une nouvelle base de données vide et perdra toutes les données"
+        + " actuelles. Êtes-vous sûr ?",
         "confirm_load_database": "Cela remplacera la base de données actuelle. Êtes-vous sûr ?",
         "select_database_file": "Sélectionner le Fichier de Base de Données",
         "invalid_database_file": "Format de fichier de base de données invalide.",
@@ -711,8 +715,10 @@ TRANSLATIONS = {
         "bouclement": "Abschluss",
         "year_end_closing_info": "Dies schließt das aktuelle Jahr ab und bereitet das nächste Jahr vor.",
         "select_retained_earnings_account": "Gewinnvortragskonto Auswählen",
-        "retained_earnings_account_help": "Wählen Sie das passive Konto, auf das der Nettogewinn/verlust übertragen wird",
-        "warning_year_end_closing": "⚠️ Warnung: Diese Operation wird Ihre Datenbank dauerhaft ändern. Ein Backup wird zuerst erstellt.",
+        "retained_earnings_account_help": "Wählen Sie das passive Konto, auf das der "
+        + "Nettogewinn/verlust übertragen wird",
+        "warning_year_end_closing": "⚠️ Warnung: Diese Operation wird Ihre Datenbank dauerhaft ändern."
+        + " Ein Backup wird zuerst erstellt.",
         "year_end_steps": "Jahresabschlussprozess:",
         "step_backup": "1. Datenbank-Backup erstellen",
         "step_excel": "2. Excel-Export erstellen",
@@ -742,7 +748,8 @@ TRANSLATIONS = {
         "account_deleted": "Konto erfolgreich gelöscht!",
         "account_not_found": "Konto nicht gefunden.",
         "account_has_entries": "Dieses Konto hat Buchungen",
-        "deactivate_instead_of_delete": "Erwägen Sie die Deaktivierung anstelle des Löschens, um die Datenintegrität zu bewahren.",
+        "deactivate_instead_of_delete": "Erwägen Sie die Deaktivierung anstelle des Löschens,"
+        + " um die Datenintegrität zu bewahren.",
         "force_delete": "Löschen Erzwingen",
         "force_delete_warning": "Dies wird das Konto und alle zugehörigen Buchungen löschen!",
         "confirm_force_delete": "Löschung Erzwingen Bestätigen",
@@ -760,7 +767,8 @@ TRANSLATIONS = {
         "database_created": "Neue Datenbank erfolgreich erstellt!",
         "database_loaded": "Datenbank erfolgreich geladen!",
         "database_error": "Fehler bei der Datenbankoperation.",
-        "confirm_new_database": "Dies erstellt eine neue leere Datenbank und alle aktuellen Daten gehen verloren. Sind Sie sicher?",
+        "confirm_new_database": "Dies erstellt eine neue leere Datenbank"
+        + " und alle aktuellen Daten gehen verloren. Sind Sie sicher?",
         "confirm_load_database": "Dies ersetzt die aktuelle Datenbank. Sind Sie sicher?",
         "select_database_file": "Datenbankdatei Auswählen",
         "invalid_database_file": "Ungültiges Datenbankdateiformat.",

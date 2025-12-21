@@ -5,9 +5,9 @@ Breaks down the large excel export function into smaller, focused functions.
 
 import pandas as pd
 from datetime import datetime
-from database import JournalEntry
-from accounting_utils import get_account_entries, get_account_balance
-from excel_utils import (
+from accounting.database import JournalEntry
+from accounting.accounting_utils import get_account_entries, get_account_balance
+from accounting.excel_utils import (
     set_journal_column_widths,
     set_account_detail_column_widths,
     set_two_column_report_widths,
@@ -15,23 +15,23 @@ from excel_utils import (
     format_account_name,
     truncate_sheet_name,
 )
-from helpers import (
+from accounting.helpers import (
     is_balance_sheet_category,
     get_balance_side,
 )
-from accounting_utils import (
+from accounting.accounting_utils import (
     get_income_statement_data,
     get_balance_sheet_data,
 )
 import io
-from database import Account
-from translation_utils import t
-from excel_utils import create_excel_formats
-from constants import (
+from accounting.database import Account
+from accounting.translation_utils import t
+from accounting.excel_utils import create_excel_formats
+from accounting.constants import (
     EXCEL_MAX_SHEET_NAME_LENGTH,
     BALANCE_ROUNDING_PRECISION,
 )
-from database_switcher import DatabaseSwitcher
+from accounting.database_switcher import DatabaseSwitcher
 
 
 def export_journal_entries_sheet(writer, session, formats, t):
@@ -56,9 +56,7 @@ def export_journal_entries_sheet(writer, session, formats, t):
 
     if journal_data:
         journal_df = pd.DataFrame(journal_data)
-        journal_df.to_excel(
-            writer, sheet_name=t("journal_entries"), index=False, startrow=1
-        )
+        journal_df.to_excel(writer, sheet_name=t("journal_entries"), index=False, startrow=1)
 
         worksheet = writer.sheets[t("journal_entries")]
         write_sheet_title(worksheet, t("journal_entries"), formats, "A1:E1")
@@ -71,9 +69,7 @@ def export_journal_entries_sheet(writer, session, formats, t):
 
         # Apply formats to data rows
         for row_num in range(len(journal_data)):
-            worksheet.write(
-                row_num + 2, 4, journal_data[row_num][t("amount")], formats["currency"]
-            )
+            worksheet.write(row_num + 2, 4, journal_data[row_num][t("amount")], formats["currency"])
 
 
 def export_account_detail_sheet(writer, session, account, formats, t):
@@ -81,26 +77,18 @@ def export_account_detail_sheet(writer, session, account, formats, t):
     account_entries_df = get_account_entries(session, account.id)
 
     # Create sheet name
-    sheet_name = truncate_sheet_name(
-        f"{account.account_code}_{account.account_name}", EXCEL_MAX_SHEET_NAME_LENGTH
-    )
+    sheet_name = truncate_sheet_name(f"{account.account_code}_{account.account_name}", EXCEL_MAX_SHEET_NAME_LENGTH)
 
     # Create account detail with starting balance, entries, and final total
     account_detail_data = []
     row_formats = []
 
     # Get starting balance
-    starting_balance = (
-        getattr(account, "balance", 0.0)
-        if is_balance_sheet_category(account.category)
-        else 0.0
-    )
+    starting_balance = getattr(account, "balance", 0.0) if is_balance_sheet_category(account.category) else 0.0
 
     # Add starting balance row if applicable
     if starting_balance != 0.0 or is_balance_sheet_category(account.category):
-        debit_amount, credit_amount = get_balance_side(
-            starting_balance, account.category
-        )
+        debit_amount, credit_amount = get_balance_side(starting_balance, account.category)
 
         account_detail_data.append(
             {
@@ -206,9 +194,7 @@ def _apply_row_formats(worksheet, detail_df, row_formats, formats, t):
         worksheet.write(actual_row, 2, debit_value, _format)
 
         # Credit column
-        credit_value = (
-            float(row_data[t("credit")]) if row_data[t("credit")] != "" else ""
-        )
+        credit_value = float(row_data[t("credit")]) if row_data[t("credit")] != "" else ""
         worksheet.write(actual_row, 3, credit_value, _format)
 
         # Counterparty column
@@ -247,26 +233,14 @@ def export_result_sheet(writer, workbook, income_data, formats, t):
 
     # Align totals
     max_detail_row = max(products_end_row, expenses_end_row)
-    _fill_blank_rows(
-        result_worksheet, products_end_row, max_detail_row, [0, 1], formats["text"]
-    )
-    _fill_blank_rows(
-        result_worksheet, expenses_end_row, max_detail_row, [3, 4], formats["text"]
-    )
+    _fill_blank_rows(result_worksheet, products_end_row, max_detail_row, [0, 1], formats["text"])
+    _fill_blank_rows(result_worksheet, expenses_end_row, max_detail_row, [3, 4], formats["text"])
 
     # Write totals
-    result_worksheet.write(
-        max_detail_row, 0, f"{t('total')} {t('products')}", formats["total"]
-    )
-    result_worksheet.write(
-        max_detail_row, 1, income_data.get("total_products", 0), formats["total"]
-    )
-    result_worksheet.write(
-        max_detail_row, 3, f"{t('total')} {t('expenses')}", formats["total"]
-    )
-    result_worksheet.write(
-        max_detail_row, 4, income_data.get("total_expenses", 0), formats["total"]
-    )
+    result_worksheet.write(max_detail_row, 0, f"{t('total')} {t('products')}", formats["total"])
+    result_worksheet.write(max_detail_row, 1, income_data.get("total_products", 0), formats["total"])
+    result_worksheet.write(max_detail_row, 3, f"{t('total')} {t('expenses')}", formats["total"])
+    result_worksheet.write(max_detail_row, 4, income_data.get("total_expenses", 0), formats["total"])
 
     # Net income
     _write_separator_row(result_worksheet, max_detail_row + 1, 5, formats["text"])
@@ -316,27 +290,15 @@ def export_balance_sheet(writer, workbook, balance_data, net_income, formats, t)
 
     # Align totals
     max_detail_row = max(active_end_row, passive_end_row)
-    _fill_blank_rows(
-        balance_worksheet, active_end_row, max_detail_row, [0, 1], formats["text"]
-    )
-    _fill_blank_rows(
-        balance_worksheet, passive_end_row, max_detail_row, [3, 4], formats["text"]
-    )
+    _fill_blank_rows(balance_worksheet, active_end_row, max_detail_row, [0, 1], formats["text"])
+    _fill_blank_rows(balance_worksheet, passive_end_row, max_detail_row, [3, 4], formats["text"])
 
     # Write totals
     total_passive_with_income = balance_data.get("total_passive", 0) + net_income
-    balance_worksheet.write(
-        max_detail_row, 0, f"{t('total')} {t('active')}", formats["total"]
-    )
-    balance_worksheet.write(
-        max_detail_row, 1, balance_data.get("total_active", 0), formats["total"]
-    )
-    balance_worksheet.write(
-        max_detail_row, 3, f"{t('total')} {t('passive')}", formats["total"]
-    )
-    balance_worksheet.write(
-        max_detail_row, 4, total_passive_with_income, formats["total"]
-    )
+    balance_worksheet.write(max_detail_row, 0, f"{t('total')} {t('active')}", formats["total"])
+    balance_worksheet.write(max_detail_row, 1, balance_data.get("total_active", 0), formats["total"])
+    balance_worksheet.write(max_detail_row, 3, f"{t('total')} {t('passive')}", formats["total"])
+    balance_worksheet.write(max_detail_row, 4, total_passive_with_income, formats["total"])
 
     # Balance verification
     _write_separator_row(balance_worksheet, max_detail_row + 1, 5, formats["text"])
@@ -398,12 +360,7 @@ def create_excel_export(db_name):
         export_journal_entries_sheet(writer, session, formats, t)
 
         # 2. Individual Account Details (one tab per account)
-        accounts = (
-            session.query(Account)
-            .filter(Account.is_active)
-            .order_by(Account.account_code)
-            .all()
-        )
+        accounts = session.query(Account).filter(Account.is_active).order_by(Account.account_code).all()
         for account in accounts:
             export_account_detail_sheet(writer, session, account, formats, t)
 

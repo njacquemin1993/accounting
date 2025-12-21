@@ -2,7 +2,7 @@
 Utility functions for Excel export formatting and configuration.
 """
 
-from constants import (
+from accounting.constants import (
     EXCEL_COLOR_HEADER,
     EXCEL_COLOR_TOTAL,
     EXCEL_COLOR_SECTION,
@@ -36,9 +36,7 @@ def create_excel_formats(workbook):
                 "font_size": 11,
             }
         ),
-        "currency": workbook.add_format(
-            {"num_format": "#,##0.00", "border": 1, "align": "right"}
-        ),
+        "currency": workbook.add_format({"num_format": "#,##0.00", "border": 1, "align": "right"}),
         "total": workbook.add_format(
             {
                 "bold": True,
@@ -67,9 +65,7 @@ def create_excel_formats(workbook):
             }
         ),
         "text": workbook.add_format({"border": 1, "align": "left"}),
-        "date": workbook.add_format(
-            {"border": 1, "align": "center", "num_format": "yyyy-mm-dd"}
-        ),
+        "date": workbook.add_format({"border": 1, "align": "center", "num_format": "yyyy-mm-dd"}),
         "net_income": workbook.add_format(
             {
                 "italic": True,

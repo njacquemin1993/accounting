@@ -24,18 +24,34 @@ A simple accounting application built with Python, Streamlit, and SQLAlchemy.
 
 ## Installation
 
+### From PyPI (Recommended)
+```bash
+pip install simple-accounting-app
+```
+
+### From Source
 1. Clone or download this repository
-2. Install required packages:
+2. Install the package in development mode:
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
 ## Usage
 
-1. Run the application:
-   ```bash
-   streamlit run app.py
-   ```
+### After Installation from PyPI
+```bash
+accounting-app
+```
+
+### From Source or Development
+```bash
+python main.py
+```
+
+Or alternatively:
+```bash
+streamlit run src/accounting/app.py
+```
 
 2. Open your web browser and navigate to the URL shown in the terminal (usually `http://localhost:8501`)
 
@@ -45,7 +61,7 @@ A simple accounting application built with Python, Streamlit, and SQLAlchemy.
 
 The application follows a modular architecture with clear separation of concerns:
 
-### Core Modules
+### Core Modules (`src/accounting/`)
 - `app.py`: Main Streamlit application entry point with navigation
 - `database.py`: SQLAlchemy models (Account, JournalEntry) and database configuration
 - `constants.py`: Centralized configuration values and magic numbers
@@ -54,7 +70,7 @@ The application follows a modular architecture with clear separation of concerns
 - `translation_utils.py`: Multi-language support utilities (English, French, German)
 - `translations.py`: Translation strings for all supported languages
 
-### Page Modules (`pages/`)
+### Page Modules (`src/accounting/pages/`)
 - `chart_of_accounts_page.py`: Chart of Accounts management
 - `journal_entries_page.py`: Journal entry recording and editing
 - `account_balances_page.py`: Account balance viewing with filtering
@@ -62,14 +78,14 @@ The application follows a modular architecture with clear separation of concerns
 - `balance_sheet_page.py`: Balance Sheet generation with validation
 
 ### File Management
-- `file_manager.py`: Database backup, restore, and file operations
-- `file_management_ui.py`: UI components for file management and year-end closing
+- `database_switcher.py`: Database backup, restore, and file operations
+- `database_management_ui.py`: UI components for file management and year-end closing
 - `excel_utils.py`: Excel formatting utilities and configuration
 - `excel_export.py`: Excel export logic for all accounting reports
 
 ### Database
-- `accounting.db`: SQLite database (auto-created on first run)
-- `requirements.txt`: Python package dependencies
+- Default database stored in `src/accounting/server_files/`
+- `requirements.txt`: Legacy dependency file (now replaced by `pyproject.toml`)
 
 ## Database
 

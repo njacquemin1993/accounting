@@ -3,9 +3,9 @@ Utility functions for accounting calculations and operations.
 """
 
 from sqlalchemy.orm import Session
-from database import Account, JournalEntry
+from accounting.database import Account, JournalEntry
 import pandas as pd
-from constants import (
+from accounting.constants import (
     CATEGORY_ACTIVE,
     CATEGORY_PASSIVE,
     CATEGORY_EXPENSES,
@@ -198,9 +198,7 @@ def get_account_entries(session: Session, account_id: int) -> pd.DataFrame:
     return df
 
 
-def validate_journal_entry(
-    debit_account_id: int, credit_account_id: int, amount: float
-) -> tuple:
+def validate_journal_entry(debit_account_id: int, credit_account_id: int, amount: float) -> tuple:
     """Validate journal entry data."""
     errors = []
 

@@ -2,7 +2,7 @@
 Common helper functions to reduce code duplication across the application.
 """
 
-from constants import (
+from accounting.constants import (
     ACCOUNT_CODE_RANGES,
     CATEGORY_ACTIVE,
     CATEGORY_PASSIVE,
@@ -14,7 +14,7 @@ from constants import (
     MIN_ACCOUNTS_FOR_JOURNAL_ENTRY,
     DEFAULT_CURRENCY,
 )
-from translation_utils import t
+from accounting.translation_utils import t
 
 
 def get_category_display_map():

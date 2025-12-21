@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simple-accounting-app"
+version = "1.0.0"
+description = "A simple accounting application built with Python, Streamlit, and SQLAlchemy"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Nicolas Jacquemin", email = "n.jacquemin1993@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Framework :: Streamlit",
+]
+keywords = ["accounting", "bookkeeping", "streamlit", "finance"]
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit>=1.52.0",
+    "sqlalchemy>=2.0.23",
+    "pandas>=2.1.4",
+    "plotly>=5.17.0",
+    "xlsxwriter>=3.1.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.14.8",
+    "mypy>=1.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/njacquemin1993/accounting"
+"Bug Tracker" = "https://github.com/njacquemin1993/accounting/issues"
+"Repository" = "https://github.com/njacquemin1993/accounting"
+
+[project.scripts]
+accounting-app = "accounting.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+accounting = ["server_files/*"]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+line-length = 120
+
+# Assume Python 3.12.
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["E", "F"]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10

@@ -4,10 +4,10 @@ Stock Management page for inventory tracking.
 
 import streamlit as st
 import pandas as pd
-from database import StockItem, StockJournalEntry
-from translation_utils import t
-from pages.base_page import BasePage
-from database_switcher import get_current_db_manager
+from accounting.database import StockItem, StockJournalEntry
+from accounting.translation_utils import t
+from accounting.pages.base_page import BasePage
+from accounting.database_switcher import get_current_db_manager
 
 
 @st.dialog(t("add_new_item"))
@@ -15,9 +15,7 @@ def show_add_item_dialog():
     """Show add new item dialog."""
     with st.form("add_item_form"):
         name = st.text_input(t("item_name"), help=t("item_name_help"))
-        description = st.text_area(
-            t("item_description"), help=t("item_description_help")
-        )
+        description = st.text_area(t("item_description"), help=t("item_description_help"))
         unit = st.selectbox(
             t("unit_of_measure"),
             options=["pieces", "kg", "g", "liters", "ml", "meters", "cm", "m2", "m3"],
@@ -40,11 +38,7 @@ def show_add_item_dialog():
 
                 try:
                     # Check if item already exists
-                    existing_item = (
-                        session.query(StockItem)
-                        .filter(StockItem.name == name.strip())
-                        .first()
-                    )
+                    existing_item = session.query(StockItem).filter(StockItem.name == name.strip()).first()
 
                     if existing_item:
                         st.error(t("item_already_exists"))
@@ -97,17 +91,11 @@ def show_quantity_adjustment_dialog(item_id: int, current_quantity: float):
         )
 
         if adjustment_type in ["add", "remove"]:
-            quantity = st.number_input(
-                t("quantity"), min_value=0.1, value=1.0, step=0.1
-            )
+            quantity = st.number_input(t("quantity"), min_value=0.1, value=1.0, step=0.1)
         else:  # set
-            quantity = st.number_input(
-                t("new_quantity"), min_value=0.0, value=current_quantity, step=0.1
-            )
+            quantity = st.number_input(t("new_quantity"), min_value=0.0, value=current_quantity, step=0.1)
 
-        description = st.text_area(
-            t("adjustment_description"), help=t("adjustment_description_help")
-        )
+        description = st.text_area(t("adjustment_description"), help=t("adjustment_description_help"))
 
         submit_button = st.form_submit_button(t("apply_adjustment"))
 
@@ -117,9 +105,7 @@ def show_quantity_adjustment_dialog(item_id: int, current_quantity: float):
                 session = db_manager.get_session()
 
                 try:
-                    item = (
-                        session.query(StockItem).filter(StockItem.id == item_id).first()
-                    )
+                    item = session.query(StockItem).filter(StockItem.id == item_id).first()
 
                     if item:
                         previous_quantity = item.current_quantity
@@ -222,12 +208,7 @@ class StockManagementPage(BasePage):
 
         try:
             # Get all stock items
-            items = (
-                session.query(StockItem)
-                .filter(StockItem.is_active)
-                .order_by(StockItem.name)
-                .all()
-            )
+            items = session.query(StockItem).filter(StockItem.is_active).order_by(StockItem.name).all()
 
             if items:
                 st.subheader(t("inventory_list"))
@@ -272,9 +253,7 @@ class StockManagementPage(BasePage):
 
                     with col4:
                         if st.button(t("adjust"), key=f"adjust_{item.id}"):
-                            show_quantity_adjustment_dialog(
-                                item.id, item.current_quantity
-                            )
+                            show_quantity_adjustment_dialog(item.id, item.current_quantity)
 
                     with col5:
                         if st.button(t("journal"), key=f"journal_{item.id}"):
@@ -282,9 +261,7 @@ class StockManagementPage(BasePage):
 
                     with col6:
                         # Delete button (optional)
-                        if st.button(
-                            "🗑️", key=f"delete_{item.id}", help=t("delete_item")
-                        ):
+                        if st.button("🗑️", key=f"delete_{item.id}", help=t("delete_item")):
                             # Soft delete
                             item.is_active = False
                             session.commit()

@@ -5,11 +5,11 @@ Journal Entries page for navigation.
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
-from database import Account, JournalEntry
-from accounting_utils import validate_journal_entry
-from translation_utils import t
-from helpers import has_sufficient_accounts, format_currency
-from pages.base_page import BasePage
+from accounting.database import Account, JournalEntry
+from accounting.accounting_utils import validate_journal_entry
+from accounting.translation_utils import t
+from accounting.helpers import has_sufficient_accounts, format_currency
+from accounting.pages.base_page import BasePage
 
 
 @st.dialog(t("edit_entry"))
@@ -21,24 +21,13 @@ def show_edit_dialog(session, entry_id):
         return
 
     # Get all active accounts for dropdowns
-    all_accounts = (
-        session.query(Account)
-        .filter(Account.is_active)
-        .order_by(Account.account_code)
-        .all()
-    )
-    account_options = {
-        f"{acc.account_code} - {acc.account_name}": acc.id for acc in all_accounts
-    }
+    all_accounts = session.query(Account).filter(Account.is_active).order_by(Account.account_code).all()
+    account_options = {f"{acc.account_code} - {acc.account_name}": acc.id for acc in all_accounts}
     account_list = list(account_options.keys())
 
     # Find current selections
-    current_debit_label = (
-        f"{entry.debit_account.account_code} - {entry.debit_account.account_name}"
-    )
-    current_credit_label = (
-        f"{entry.credit_account.account_code} - {entry.credit_account.account_name}"
-    )
+    current_debit_label = f"{entry.debit_account.account_code} - {entry.debit_account.account_name}"
+    current_credit_label = f"{entry.credit_account.account_code} - {entry.credit_account.account_name}"
 
     # Form fields
     try:
@@ -48,27 +37,13 @@ def show_edit_dialog(session, entry_id):
         edit_date = st.date_input(t("date"), value=date.today())
     edit_description = st.text_input(t("description"), value=entry.description)
 
-    edit_debit_index = (
-        account_list.index(current_debit_label)
-        if current_debit_label in account_list
-        else 0
-    )
-    edit_debit_account = st.selectbox(
-        t("debit_account"), account_list, index=edit_debit_index
-    )
+    edit_debit_index = account_list.index(current_debit_label) if current_debit_label in account_list else 0
+    edit_debit_account = st.selectbox(t("debit_account"), account_list, index=edit_debit_index)
 
-    edit_credit_index = (
-        account_list.index(current_credit_label)
-        if current_credit_label in account_list
-        else 0
-    )
-    edit_credit_account = st.selectbox(
-        t("credit_account"), account_list, index=edit_credit_index
-    )
+    edit_credit_index = account_list.index(current_credit_label) if current_credit_label in account_list else 0
+    edit_credit_account = st.selectbox(t("credit_account"), account_list, index=edit_credit_index)
 
-    edit_amount = st.number_input(
-        t("amount"), min_value=0.01, step=0.01, format="%.2f", value=float(entry.amount)
-    )
+    edit_amount = st.number_input(t("amount"), min_value=0.01, step=0.01, format="%.2f", value=float(entry.amount))
 
     col1, col2 = st.columns([1, 1])
 
@@ -78,9 +53,7 @@ def show_edit_dialog(session, entry_id):
                 edit_debit_account_id = account_options[edit_debit_account]
                 edit_credit_account_id = account_options[edit_credit_account]
 
-                is_valid, errors = validate_journal_entry(
-                    edit_debit_account_id, edit_credit_account_id, edit_amount
-                )
+                is_valid, errors = validate_journal_entry(edit_debit_account_id, edit_credit_account_id, edit_amount)
 
                 if is_valid:
                     entry.date = datetime.combine(edit_date, datetime.min.time())
@@ -110,9 +83,7 @@ def show_delete_dialog(session, entry_id):
         st.error(t("entry_not_found"))
         return
 
-    st.write(
-        f"**{t('entry')}:** {entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}"
-    )
+    st.write(f"**{t('entry')}:** {entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}")
     st.write(f"**{t('amount')}:** {format_currency(entry.amount)}")
     st.warning(t("confirm_delete_message"))
 
@@ -134,32 +105,21 @@ def show_delete_dialog(session, entry_id):
 def show_add_entry_dialog(session):
     """Show add new entry dialog."""
     # Get active accounts for dropdowns
-    active_accounts = (
-        session.query(Account)
-        .filter(Account.is_active)
-        .order_by(Account.account_code)
-        .all()
-    )
+    active_accounts = session.query(Account).filter(Account.is_active).order_by(Account.account_code).all()
 
     if not has_sufficient_accounts(len(active_accounts)):
         st.warning(t("need_two_accounts"))
         return
 
-    account_options = {
-        f"{acc.account_code} - {acc.account_name}": acc.id for acc in active_accounts
-    }
+    account_options = {f"{acc.account_code} - {acc.account_name}": acc.id for acc in active_accounts}
     account_list = list(account_options.keys())
 
     # Form fields
     entry_date = st.date_input(t("date"), value=date.today())
-    description = st.text_input(
-        t("description"), help="Brief description of the transaction"
-    )
+    description = st.text_input(t("description"), help="Brief description of the transaction")
     debit_account = st.selectbox(t("debit_account"), account_list)
     credit_account = st.selectbox(t("credit_account"), account_list)
-    amount = st.number_input(
-        t("amount"), min_value=0.01, step=0.01, format="%.2f", help=t("amount_help")
-    )
+    amount = st.number_input(t("amount"), min_value=0.01, step=0.01, format="%.2f", help=t("amount_help"))
 
     col1, col2 = st.columns([1, 1])
 
@@ -169,9 +129,7 @@ def show_add_entry_dialog(session):
                 debit_account_id = account_options[debit_account]
                 credit_account_id = account_options[credit_account]
 
-                is_valid, errors = validate_journal_entry(
-                    debit_account_id, credit_account_id, amount
-                )
+                is_valid, errors = validate_journal_entry(debit_account_id, credit_account_id, amount)
 
                 if is_valid:
                     new_entry = JournalEntry(
@@ -205,12 +163,7 @@ class JournalEntriesPage(BasePage):
     def content(self, session):
         # Display existing journal entries
         try:
-            entries = (
-                session.query(JournalEntry)
-                .order_by(JournalEntry.date.desc())
-                .limit(20)
-                .all()
-            )
+            entries = session.query(JournalEntry).order_by(JournalEntry.date.desc()).limit(20).all()
         except Exception as e:
             st.error(f"{t('error_loading_entries')}: {str(e)}")
             entries = []
@@ -232,15 +185,11 @@ class JournalEntriesPage(BasePage):
                         entry_options[entry_label] = entry.id
                     except Exception:
                         # Handle datetime formatting errors gracefully
-                        entry_label = (
-                            f"{entry.id} - [Invalid Date] - {entry.description}"
-                        )
+                        entry_label = f"{entry.id} - [Invalid Date] - {entry.description}"
                         entry_options[entry_label] = entry.id
 
                 if entry_options:
-                    selected_entry_label = st.selectbox(
-                        t("select_entry_to_modify"), list(entry_options.keys())
-                    )
+                    selected_entry_label = st.selectbox(t("select_entry_to_modify"), list(entry_options.keys()))
 
                     if selected_entry_label:
                         selected_entry_id = entry_options[selected_entry_label]

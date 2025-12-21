@@ -4,10 +4,10 @@ Result Sheet page for navigation.
 
 import streamlit as st
 import pandas as pd
-from accounting_utils import get_income_statement_data
-from translation_utils import t
-from helpers import format_currency
-from pages.base_page import BasePage
+from accounting.accounting_utils import get_income_statement_data
+from accounting.translation_utils import t
+from accounting.helpers import format_currency
+from accounting.pages.base_page import BasePage
 
 
 class ResultSheetPage(BasePage):
@@ -18,12 +18,8 @@ class ResultSheetPage(BasePage):
         income_statement_data = get_income_statement_data(session)
 
         # Calculate table heights to align totals
-        products_rows = (
-            len(income_statement_data["products"]) + 2
-        )  # products + blank + total
-        expenses_rows = (
-            len(income_statement_data["expenses"]) + 2
-        )  # expenses + blank + total
+        products_rows = len(income_statement_data["products"]) + 2  # products + blank + total
+        expenses_rows = len(income_statement_data["expenses"]) + 2  # expenses + blank + total
 
         col1, col2 = st.columns(2)
 
@@ -35,9 +31,7 @@ class ResultSheetPage(BasePage):
                 for product in income_statement_data["products"]:
                     products_data.append(
                         {
-                            t(
-                                "account_column"
-                            ): f"{product['code']} - {product['name']}",
+                            t("account_column"): f"{product['code']} - {product['name']}",
                             t("amount_column"): format_currency(product["balance"]),
                         }
                     )
@@ -46,18 +40,14 @@ class ResultSheetPage(BasePage):
                 if products_rows < expenses_rows:
                     blank_lines_needed = expenses_rows - products_rows
                     for _ in range(blank_lines_needed):
-                        products_data.append(
-                            {t("account_column"): "", t("amount_column"): ""}
-                        )
+                        products_data.append({t("account_column"): "", t("amount_column"): ""})
 
                 # Add spacing and total
                 products_data.append({t("account_column"): "", t("amount_column"): ""})
                 products_data.append(
                     {
                         t("account_column"): t("total_products"),
-                        t("amount_column"): format_currency(
-                            income_statement_data["total_products"]
-                        ),
+                        t("amount_column"): format_currency(income_statement_data["total_products"]),
                     }
                 )
 
@@ -76,9 +66,7 @@ class ResultSheetPage(BasePage):
                 for expense in income_statement_data["expenses"]:
                     expenses_data.append(
                         {
-                            t(
-                                "account_column"
-                            ): f"{expense['code']} - {expense['name']}",
+                            t("account_column"): f"{expense['code']} - {expense['name']}",
                             t("amount_column"): format_currency(expense["balance"]),
                         }
                     )
@@ -87,18 +75,14 @@ class ResultSheetPage(BasePage):
                 if expenses_rows < products_rows:
                     blank_lines_needed = products_rows - expenses_rows
                     for _ in range(blank_lines_needed):
-                        expenses_data.append(
-                            {t("account_column"): "", t("amount_column"): ""}
-                        )
+                        expenses_data.append({t("account_column"): "", t("amount_column"): ""})
 
                 # Add spacing and total
                 expenses_data.append({t("account_column"): "", t("amount_column"): ""})
                 expenses_data.append(
                     {
                         t("account_column"): t("total_expenses"),
-                        t("amount_column"): format_currency(
-                            income_statement_data["total_expenses"]
-                        ),
+                        t("amount_column"): format_currency(income_statement_data["total_expenses"]),
                     }
                 )
 
@@ -144,9 +128,7 @@ class ResultSheetPage(BasePage):
 
         with col3:
             if income_statement_data["total_products"] > 0:
-                profit_margin = (
-                    net_income / income_statement_data["total_products"]
-                ) * 100
+                profit_margin = (net_income / income_statement_data["total_products"]) * 100
                 st.metric(t("profit_margin"), f"{profit_margin:.1f}%")
             else:
                 st.metric(t("profit_margin"), "N/A")

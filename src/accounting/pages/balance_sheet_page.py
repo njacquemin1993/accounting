@@ -4,10 +4,13 @@ Balance Sheet page for navigation.
 
 import streamlit as st
 import pandas as pd
-from accounting_utils import get_balance_sheet_data, get_income_statement_data
-from translation_utils import t
-from helpers import format_currency
-from pages.base_page import BasePage
+from accounting.accounting_utils import (
+    get_balance_sheet_data,
+    get_income_statement_data,
+)
+from accounting.translation_utils import t
+from accounting.helpers import format_currency
+from accounting.pages.base_page import BasePage
 
 
 class BalanceSheetPage(BasePage):
@@ -102,24 +105,17 @@ class BalanceSheetPage(BasePage):
 
         # Balance check
         st.markdown("---")
-        total_passive_with_net_income = (
-            balance_sheet_data["total_passive"] + income_statement_data["net_income"]
-        )
+        total_passive_with_net_income = balance_sheet_data["total_passive"] + income_statement_data["net_income"]
         difference = balance_sheet_data["total_active"] - total_passive_with_net_income
         if abs(difference) < 0.01:  # Allow for small rounding differences
             st.success(t("balance_sheet_balanced_checkmark"))
         else:
-            st.error(
-                f"{t('balance_sheet_not_balanced_x')} {format_currency(difference)}"
-            )
+            st.error(f"{t('balance_sheet_not_balanced_x')} {format_currency(difference)}")
 
         # Show net income impact
         if abs(income_statement_data["net_income"]) > 0.01:
+            income = format_currency(abs(income_statement_data["net_income"]))
             if income_statement_data["net_income"] >= 0:
-                st.info(
-                    f"{t('net_income_info')} {format_currency(income_statement_data['net_income'])} {t('has_been_included_in_passive')}"
-                )
+                st.info(f"{t('net_income_info')} {income} {t('has_been_included_in_passive')}")
             else:
-                st.warning(
-                    f"{t('net_loss_warning')} {format_currency(abs(income_statement_data['net_income']))} {t('has_been_included_in_passive')}"
-                )
+                st.warning(f"{t('net_loss_warning')} {income} {t('has_been_included_in_passive')}")

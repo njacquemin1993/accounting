@@ -8,9 +8,13 @@ import streamlit as st
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from database import DatabaseManager
-from constants import DEFAULT_SERVER_FILES_DIR, DEFAULT_DB_NAME, DATABASE_EXTENSION
-from translation_utils import t
+from accounting.database import DatabaseManager
+from accounting.constants import (
+    DEFAULT_SERVER_FILES_DIR,
+    DEFAULT_DB_NAME,
+    DATABASE_EXTENSION,
+)
+from accounting.translation_utils import t
 
 
 class DatabaseSwitcher:
@@ -219,9 +223,7 @@ def get_current_db_manager():
         st.session_state.db_switcher = DatabaseSwitcher()
 
     if "db_manager" not in st.session_state:
-        st.session_state.db_manager = (
-            st.session_state.db_switcher.get_database_manager()
-        )
+        st.session_state.db_manager = st.session_state.db_switcher.get_database_manager()
 
     return st.session_state.db_manager
 
@@ -233,6 +235,4 @@ def refresh_db_manager():
         del st.session_state.db_manager
 
     if "db_switcher" in st.session_state:
-        st.session_state.db_manager = (
-            st.session_state.db_switcher.get_database_manager()
-        )
+        st.session_state.db_manager = st.session_state.db_switcher.get_database_manager()

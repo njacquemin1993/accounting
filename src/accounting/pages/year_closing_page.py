@@ -2,16 +2,16 @@ import streamlit as st
 import io
 import zipfile
 from datetime import datetime
-from database import Account, JournalEntry
-from database_switcher import get_current_db_manager, DatabaseSwitcher
-from accounting_utils import (
+from accounting.database import Account, JournalEntry
+from accounting.database_switcher import get_current_db_manager, DatabaseSwitcher
+from accounting.accounting_utils import (
     get_income_statement_data,
     get_account_balance,
 )
-from translation_utils import t
-from helpers import format_currency
-from excel_export import create_excel_export
-from pages.base_page import BasePage
+from accounting.translation_utils import t
+from accounting.helpers import format_currency
+from accounting.excel_export import create_excel_export
+from accounting.pages.base_page import BasePage
 
 
 def create_year_end_closing_package(retained_earnings_account_id):
@@ -55,15 +55,10 @@ def perform_year_end_closing(retained_earnings_account_id):
 
         # Get retained earnings account
         retained_earnings_account = (
-            session.query(Account)
-            .filter(Account.id == retained_earnings_account_id, Account.is_active)
-            .first()
+            session.query(Account).filter(Account.id == retained_earnings_account_id, Account.is_active).first()
         )
 
-        if (
-            not retained_earnings_account
-            or retained_earnings_account.category != "Passive"
-        ):
+        if not retained_earnings_account or retained_earnings_account.category != "Passive":
             return False, "Selected account is not a valid passive account"
 
         # Get current net income
@@ -78,9 +73,7 @@ def perform_year_end_closing(retained_earnings_account_id):
 
         # 2. Update all Active and Passive accounts with their current balances
         active_passive_accounts = (
-            session.query(Account)
-            .filter(Account.category.in_(["Active", "Passive"]), Account.is_active)
-            .all()
+            session.query(Account).filter(Account.category.in_(["Active", "Passive"]), Account.is_active).all()
         )
 
         for account in active_passive_accounts:
@@ -123,14 +116,10 @@ class YearClosingPage(BasePage):
         session.close()
 
         if not passive_accounts:
-            st.error(
-                "No passive accounts available. Create at least one passive account before year-end closing."
-            )
+            st.error("No passive accounts available. Create at least one passive account before year-end closing.")
         else:
             # Account selection
-            account_options = [
-                f"{acc.account_code} - {acc.account_name}" for acc in passive_accounts
-            ]
+            account_options = [f"{acc.account_code} - {acc.account_name}" for acc in passive_accounts]
             selected_account_idx = st.selectbox(
                 t("select_retained_earnings_account"),
                 range(len(account_options)),
@@ -187,15 +176,10 @@ class YearClosingPage(BasePage):
                         status_text.text(t("step_backup"))
                         progress_bar.progress(20)
 
-                        zip_data, backup_data, excel_data = (
-                            create_year_end_closing_package(selected_account.id)
-                        )
+                        zip_data, backup_data, excel_data = create_year_end_closing_package(selected_account.id)
 
                         if not zip_data:
-                            st.error(
-                                t("year_end_closing_error")
-                                + " Failed to create backup package"
-                            )
+                            st.error(t("year_end_closing_error") + " Failed to create backup package")
                             exit()
 
                         progress_bar.progress(40)
@@ -262,9 +246,7 @@ class YearClosingPage(BasePage):
                             del st.session_state[key]
 
                         # Suggest refresh
-                        st.info(
-                            "💡 Please refresh the page to see the updated database."
-                        )
+                        st.info("💡 Please refresh the page to see the updated database.")
 
                     except Exception as e:
                         st.error(f"{t('year_end_closing_error')} {str(e)}")

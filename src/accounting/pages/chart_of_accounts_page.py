@@ -4,16 +4,16 @@ Chart of Accounts page for navigation.
 
 import streamlit as st
 import pandas as pd
-from database import Account, JournalEntry
-from translation_utils import t
-from helpers import (
+from accounting.database import Account, JournalEntry
+from accounting.translation_utils import t
+from accounting.helpers import (
     validate_account_code,
     get_category_display_map,
     get_reverse_category_map,
     is_balance_sheet_category,
     format_currency,
 )
-from pages.base_page import BasePage
+from accounting.pages.base_page import BasePage
 
 
 @st.dialog(t("edit_account"))
@@ -25,23 +25,15 @@ def show_edit_account_dialog(session, account_id):
         return
 
     # Form fields with current values
-    edit_code = st.text_input(
-        t("account_code"), value=account.account_code, help=t("account_code_help")
-    )
-    edit_name = st.text_input(
-        t("account_name"), value=account.account_name, help=t("account_name_help")
-    )
+    edit_code = st.text_input(t("account_code"), value=account.account_code, help=t("account_code_help"))
+    edit_name = st.text_input(t("account_name"), value=account.account_name, help=t("account_name_help"))
 
     # Category selection with current value
     category_map = get_category_display_map()
     categories = list(category_map.values())
 
     current_category_translated = category_map.get(account.category, t("active"))
-    current_index = (
-        categories.index(current_category_translated)
-        if current_category_translated in categories
-        else 0
-    )
+    current_index = categories.index(current_category_translated) if current_category_translated in categories else 0
 
     edit_category = st.selectbox(t("category"), categories, index=current_index)
 
@@ -68,18 +60,14 @@ def show_edit_account_dialog(session, account_id):
         if st.button(t("update_account"), width="stretch", type="primary"):
             if edit_code and edit_name:
                 # Validate account code for the category
-                is_valid, validation_error = validate_account_code(
-                    edit_code, db_category, t
-                )
+                is_valid, validation_error = validate_account_code(edit_code, db_category, t)
                 if not is_valid:
                     st.error(validation_error)
                     return
 
                 # Check if account code already exists (excluding current account)
                 existing = (
-                    session.query(Account)
-                    .filter(Account.account_code == edit_code, Account.id != account_id)
-                    .first()
+                    session.query(Account).filter(Account.account_code == edit_code, Account.id != account_id).first()
                 )
                 if existing:
                     st.error(t("account_exists"))
@@ -114,10 +102,7 @@ def show_delete_account_dialog(session, account_id):
     # Check if account has any journal entries
     entries_count = (
         session.query(JournalEntry)
-        .filter(
-            (JournalEntry.debit_account_id == account_id)
-            | (JournalEntry.credit_account_id == account_id)
-        )
+        .filter((JournalEntry.debit_account_id == account_id) | (JournalEntry.credit_account_id == account_id))
         .count()
     )
 
@@ -173,9 +158,7 @@ def show_add_account_dialog(session):
     # Form fields
     account_code = st.text_input(t("account_code"), help=t("account_code_help"))
     account_name = st.text_input(t("account_name"), help=t("account_name_help"))
-    category = st.selectbox(
-        t("category"), [t("active"), t("passive"), t("expenses"), t("products")]
-    )
+    category = st.selectbox(t("category"), [t("active"), t("passive"), t("expenses"), t("products")])
 
     # Map translated category back to English for validation
     category_map = {
@@ -203,19 +186,13 @@ def show_add_account_dialog(session):
         if st.button(t("add_account"), width="stretch", type="primary"):
             if account_code and account_name:
                 # Validate account code for the category
-                is_valid, validation_error = validate_account_code(
-                    account_code, db_category
-                )
+                is_valid, validation_error = validate_account_code(account_code, db_category)
                 if not is_valid:
                     st.error(validation_error)
                     return
 
                 # Check if account code already exists
-                existing = (
-                    session.query(Account)
-                    .filter(Account.account_code == account_code)
-                    .first()
-                )
+                existing = session.query(Account).filter(Account.account_code == account_code).first()
                 if existing:
                     st.error(t("account_exists"))
                 else:
@@ -247,12 +224,7 @@ class ChartOfAccountsPage(BasePage):
         manage_col, add_col = st.columns([2, 1], vertical_alignment="bottom")
 
         # Get active accounts for management
-        accounts = (
-            session.query(Account)
-            .filter(Account.is_active)
-            .order_by(Account.account_code)
-            .all()
-        )
+        accounts = session.query(Account).filter(Account.is_active).order_by(Account.account_code).all()
 
         with add_col:
             if st.button(t("add_new_account"), type="primary", width="stretch"):
@@ -267,9 +239,7 @@ class ChartOfAccountsPage(BasePage):
                     account_options[account_label] = account.id
 
                 if account_options:
-                    selected_account_label = st.selectbox(
-                        t("select_account_to_modify"), list(account_options.keys())
-                    )
+                    selected_account_label = st.selectbox(t("select_account_to_modify"), list(account_options.keys()))
 
                     if selected_account_label:
                         selected_account_id = account_options[selected_account_label]
@@ -292,12 +262,7 @@ class ChartOfAccountsPage(BasePage):
         st.markdown("---")
 
         # Display existing accounts in 2x2 layout
-        accounts = (
-            session.query(Account)
-            .filter(Account.is_active)
-            .order_by(Account.account_code)
-            .all()
-        )
+        accounts = session.query(Account).filter(Account.is_active).order_by(Account.account_code).all()
 
         if accounts:
             # Group accounts by category
@@ -314,25 +279,11 @@ class ChartOfAccountsPage(BasePage):
 
             # Calculate table heights to align them
             active_rows = (
-                len(accounts_by_category["Active"])
-                if accounts_by_category["Active"]
-                else 1
+                len(accounts_by_category["Active"]) if accounts_by_category["Active"] else 1
             )  # 1 for empty message
-            passive_rows = (
-                len(accounts_by_category["Passive"])
-                if accounts_by_category["Passive"]
-                else 1
-            )
-            products_rows = (
-                len(accounts_by_category["Products"])
-                if accounts_by_category["Products"]
-                else 1
-            )
-            expenses_rows = (
-                len(accounts_by_category["Expenses"])
-                if accounts_by_category["Expenses"]
-                else 1
-            )
+            passive_rows = len(accounts_by_category["Passive"]) if accounts_by_category["Passive"] else 1
+            products_rows = len(accounts_by_category["Products"]) if accounts_by_category["Products"] else 1
+            expenses_rows = len(accounts_by_category["Expenses"]) if accounts_by_category["Expenses"] else 1
 
             # Create 2x2 layout
             col1, col2 = st.columns(2)

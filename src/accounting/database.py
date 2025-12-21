@@ -27,19 +27,13 @@ class Account(Base):
     account_code = Column(String(10), unique=True, nullable=False)
     account_name = Column(String(100), nullable=False)
     category = Column(String(50))  # Active, Passive, Expenses, Products
-    balance = Column(
-        Float, nullable=False, default=0.0
-    )  # Base balance for Active/Passive accounts
+    balance = Column(Float, nullable=False, default=0.0)  # Base balance for Active/Passive accounts
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
 
     # Relationship with journal entries
-    debit_entries = relationship(
-        "JournalEntry", foreign_keys="JournalEntry.debit_account_id", viewonly=True
-    )
-    credit_entries = relationship(
-        "JournalEntry", foreign_keys="JournalEntry.credit_account_id", viewonly=True
-    )
+    debit_entries = relationship("JournalEntry", foreign_keys="JournalEntry.debit_account_id", viewonly=True)
+    credit_entries = relationship("JournalEntry", foreign_keys="JournalEntry.credit_account_id", viewonly=True)
 
 
 class JournalEntry(Base):
@@ -64,9 +58,7 @@ class StockItem(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False, unique=True)
     description = Column(String(200))
-    unit = Column(
-        String(20), default="pieces"
-    )  # unit of measure (pieces, kg, liters, etc.)
+    unit = Column(String(20), default="pieces")  # unit of measure (pieces, kg, liters, etc.)
     current_quantity = Column(Float, nullable=False, default=0.0)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
@@ -81,9 +73,7 @@ class StockJournalEntry(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False, default=func.now())
     item_id = Column(Integer, ForeignKey("stock_items.id"), nullable=False)
-    quantity_change = Column(
-        Float, nullable=False
-    )  # positive for increase, negative for decrease
+    quantity_change = Column(Float, nullable=False)  # positive for increase, negative for decrease
     previous_quantity = Column(Float, nullable=False)
     new_quantity = Column(Float, nullable=False)
     description = Column(Text, nullable=False)
@@ -98,9 +88,7 @@ class DatabaseManager:
         self.db_path = db_path
         self.engine = create_engine(f"sqlite:///{db_path}", pool_pre_ping=True)
         self.create_tables()
-        self.SessionLocal = sessionmaker(
-            autocommit=False, autoflush=False, bind=self.engine
-        )
+        self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 
     def create_tables(self):
         """Create database tables."""

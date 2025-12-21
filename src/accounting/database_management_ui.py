@@ -4,8 +4,8 @@ Provides interface for switching between databases and creating new ones.
 """
 
 import streamlit as st
-from database_switcher import DatabaseSwitcher
-from translation_utils import t
+from accounting.database_switcher import DatabaseSwitcher
+from accounting.translation_utils import t
 
 
 def render_database_switcher_sidebar():
@@ -31,9 +31,7 @@ def render_database_switcher_sidebar():
             selected_db = st.selectbox(
                 t("switch_to_database"),
                 available_databases,
-                index=available_databases.index(current_db)
-                if current_db in available_databases
-                else 0,
+                index=available_databases.index(current_db) if current_db in available_databases else 0,
                 key="database_selector",
             )
 
@@ -70,9 +68,7 @@ def render_database_switcher_sidebar():
         if len(available_databases) > 1:
             with st.expander(t("delete_database")):
                 # Don't allow deleting the current database or default database
-                deletable_databases = [
-                    db for db in available_databases if db != current_db
-                ]
+                deletable_databases = [db for db in available_databases if db != current_db]
 
                 if deletable_databases:
                     db_to_delete = st.selectbox(
@@ -120,7 +116,7 @@ def render_database_switcher_main():
         try:
             db_manager = db_switcher.get_database_manager()
             with db_manager.get_session() as session:
-                from database import Account, JournalEntry
+                from accounting.database import Account, JournalEntry
 
                 account_count = session.query(Account).count()
                 entry_count = session.query(JournalEntry).count()
@@ -160,9 +156,7 @@ def render_database_switcher_main():
 
             with col3:
                 if db_name != current_db:
-                    if st.button(
-                        "🗑️", key=f"delete_{db_name}", help=t("delete_database")
-                    ):
+                    if st.button("🗑️", key=f"delete_{db_name}", help=t("delete_database")):
                         # Add confirmation
                         if f"confirm_delete_{db_name}" not in st.session_state:
                             st.session_state[f"confirm_delete_{db_name}"] = True
@@ -175,9 +169,7 @@ def render_database_switcher_main():
                 col1, col2, col3 = st.columns([1, 1, 1])
 
                 with col1:
-                    if st.button(
-                        t("yes_delete"), key=f"yes_delete_{db_name}", type="primary"
-                    ):
+                    if st.button(t("yes_delete"), key=f"yes_delete_{db_name}", type="primary"):
                         success, message = db_switcher.delete_database(db_name)
                         if success:
                             st.success(message)

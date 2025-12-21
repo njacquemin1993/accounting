@@ -3,8 +3,8 @@ Translation utilities for the accounting application.
 """
 
 import streamlit as st
-from translations import get_translation, get_available_languages
-from constants import (
+from accounting.translations import get_translation, get_available_languages
+from accounting.constants import (
     AVAILABLE_LANGUAGES,
     DEFAULT_LANGUAGE,
     LANGUAGE_OPTIONS,
@@ -55,9 +55,7 @@ def language_selector():
     current_lang = get_current_language()
 
     # Find current language display name
-    current_display = LANGUAGE_OPTIONS.get(
-        current_lang, LANGUAGE_OPTIONS[DEFAULT_LANGUAGE]
-    )
+    current_display = LANGUAGE_OPTIONS.get(current_lang, LANGUAGE_OPTIONS[DEFAULT_LANGUAGE])
 
     selected_display = st.selectbox(
         "language",

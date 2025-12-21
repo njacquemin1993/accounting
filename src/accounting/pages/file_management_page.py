@@ -4,11 +4,11 @@ File management UI components for the accounting application.
 
 import streamlit as st
 from datetime import datetime
-from database_switcher import DatabaseSwitcher
-from constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
-from translation_utils import t
-from pages.base_page import BasePage
-from excel_export import create_excel_export
+from accounting.database_switcher import DatabaseSwitcher
+from accounting.constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
+from accounting.translation_utils import t
+from accounting.pages.base_page import BasePage
+from accounting.excel_export import create_excel_export
 
 
 @st.dialog(t("export_as_excel"))
@@ -59,9 +59,7 @@ def delete_db(db_name):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button(
-            t("yes_delete"), key=f"yes_delete_dialog_{db_name}", type="primary"
-        ):
+        if st.button(t("yes_delete"), key=f"yes_delete_dialog_{db_name}", type="primary"):
             db_switcher = DatabaseSwitcher()
             success, message = db_switcher.delete_database(db_name)
             if success:
@@ -115,9 +113,7 @@ def create_db():
         key="new_db_name_dialog",
     )
 
-    switch_to_new = st.checkbox(
-        t("switch_to_the_new_database"), key="confirm_create_db_dialog"
-    )
+    switch_to_new = st.checkbox(t("switch_to_the_new_database"), key="confirm_create_db_dialog")
 
     if st.button(t("create_database"), type="primary", key="create_db_dialog"):
         if new_db_name:
@@ -137,12 +133,8 @@ def create_db():
 @st.dialog(t("upload_database"))
 def upload_db():
     st.info(t("upload_database"))
-    uploaded_file = st.file_uploader(
-        t("choose_file"), type=[DATABASE_EXTENSION], key="upload_db_file"
-    )
-    switch_to_new = st.checkbox(
-        t("switch_to_the_new_database"), key="confirm_create_db_dialog"
-    )
+    uploaded_file = st.file_uploader(t("choose_file"), type=[DATABASE_EXTENSION], key="upload_db_file")
+    switch_to_new = st.checkbox(t("switch_to_the_new_database"), key="confirm_create_db_dialog")
 
     if st.button(t("upload"), type="primary", key="upload_db_button"):
         if uploaded_file:
@@ -191,9 +183,7 @@ def db_info_line(db_switcher, db_name):
             )
 
         with cols[6]:
-            download_btn = st.button(
-                "💾", key=f"download_db_{db_name}", help=t("download_database")
-            )
+            download_btn = st.button("💾", key=f"download_db_{db_name}", help=t("download_database"))
 
         with cols[7]:
             export_btn = st.button(
