@@ -209,6 +209,9 @@ TRANSLATIONS = {
         "export_as_excel": "Export as Excel",
         "export_excel_info": "Export all accounting data to Excel format with multiple tabs",
         "download_excel_file": "Download Excel File",
+        "creating_excel_export": "Creating Excel export...",
+        "download_excel": "Download Excel",
+        "excel_export_ready": "Excel export is ready for download",
         "export_error": "Error creating Excel export",
         "total": "Total",
         # Journal Entries - Additional entries
@@ -489,6 +492,9 @@ TRANSLATIONS = {
         "export_as_excel": "Exporter en Excel",
         "export_excel_info": "Exporter toutes les données comptables en format Excel avec plusieurs onglets",
         "download_excel_file": "Télécharger le Fichier Excel",
+        "creating_excel_export": "Création de l'export Excel...",
+        "download_excel": "Télécharger Excel",
+        "excel_export_ready": "L'export Excel est prêt pour le téléchargement",
         "export_error": "Erreur lors de la création de l'export Excel",
         "total": "Total",
         # Journal Entries - Additional entries
@@ -769,6 +775,9 @@ TRANSLATIONS = {
         "export_as_excel": "Als Excel Exportieren",
         "export_excel_info": "Alle Buchhaltungsdaten in Excel-Format mit mehreren Registerkarten exportieren",
         "download_excel_file": "Excel-Datei Herunterladen",
+        "creating_excel_export": "Excel-Export wird erstellt...",
+        "download_excel": "Excel Herunterladen",
+        "excel_export_ready": "Excel-Export ist zum Download bereit",
         "export_error": "Fehler beim Erstellen des Excel-Exports",
         "total": "Gesamt",
         # Journal Entries - Additional entries

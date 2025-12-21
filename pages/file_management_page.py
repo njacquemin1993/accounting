@@ -3,10 +3,53 @@ File management UI components for the accounting application.
 """
 
 import streamlit as st
+from datetime import datetime
 from database_switcher import DatabaseSwitcher
 from constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
 from translation_utils import t
 from pages.base_page import BasePage
+from excel_export import create_excel_export
+
+
+@st.dialog(t("export_as_excel"))
+def export_db(db_name):
+    """Show dialog to export current database as Excel."""
+
+    st.info(t("export_excel_info"))
+    st.write(f"**{t('database_name')}:** {db_name}")
+
+    col1, col2 = st.columns([1, 1])
+
+    with col1:
+        with st.spinner(t("creating_excel_export")):
+            try:
+                excel_data = create_excel_export(db_name)
+                if excel_data:
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    filename = f"{db_name}_export_{timestamp}.xlsx"
+
+                    if st.download_button(
+                        label=t("download_excel"),
+                        data=excel_data,
+                        file_name=filename,
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        key="download_excel_file",
+                        use_container_width=True,
+                        type="primary",
+                    ):
+                        st.rerun()
+                else:
+                    st.error(t("export_error"))
+            except Exception as e:
+                st.error(f"{t('export_error')}: {str(e)}")
+
+    with col2:
+        if st.button(
+            t("cancel"),
+            key="cancel_export_excel_dialog",
+            use_container_width=True,
+        ):
+            st.rerun()
 
 
 @st.dialog(t("delete_database"))
@@ -155,13 +198,21 @@ def db_info_line(db_switcher, db_name):
             )
 
         with cols[7]:
+            export_btn = st.button(
+                "📊",
+                key=f"export_db_{db_name}",
+                help=t("export_as_excel"),
+            )
+
+        with cols[8]:
             delete_btn = st.button(
                 "🗑️",
                 key=f"delete_db_{db_name}",
                 help=t("delete_database"),
                 disabled=(db_name == current_db),
             )
-        return choose_btn, download_btn, delete_btn
+
+        return choose_btn, download_btn, export_btn, delete_btn
     return False, False, False
 
 
@@ -181,16 +232,11 @@ def database_list():
         st.markdown(f"**{t('total_accounts')}**")
     with cols[4]:
         st.markdown(f"**{t('total_entries')}**")
-    with cols[5]:
-        st.markdown(" ")
-    with cols[6]:
-        st.markdown(" ")
-    with cols[7]:
-        st.markdown(" ")
 
     buttons = {
         "choose": {},
         "download": {},
+        "export": {},
         "delete": {},
     }
 
@@ -198,6 +244,7 @@ def database_list():
         (
             buttons["choose"][db_name],
             buttons["download"][db_name],
+            buttons["export"][db_name],
             buttons["delete"][db_name],
         ) = db_info_line(db_switcher, db_name)
 
@@ -208,6 +255,10 @@ def database_list():
     for db_name, pressed in buttons["choose"].items():
         if pressed:
             switch_db(db_name)
+
+    for db_name, pressed in buttons["export"].items():
+        if pressed:
+            export_db(db_name)
 
     for db_name, pressed in buttons["download"].items():
         if pressed:

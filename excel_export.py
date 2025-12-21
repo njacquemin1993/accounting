@@ -25,13 +25,13 @@ from accounting_utils import (
 )
 import io
 from database import Account
-from database_switcher import get_current_db_manager
 from translation_utils import t
 from excel_utils import create_excel_formats
 from constants import (
     EXCEL_MAX_SHEET_NAME_LENGTH,
     BALANCE_ROUNDING_PRECISION,
 )
+from database_switcher import DatabaseSwitcher
 
 
 def export_journal_entries_sheet(writer, session, formats, t):
@@ -377,12 +377,14 @@ def _write_separator_row(worksheet, row, num_cols, format_obj):
         worksheet.write(row, col, "", format_obj)
 
 
-def create_excel_export():
+def create_excel_export(db_name):
     """Create Excel file with multiple tabs for accounting data export."""
     try:
         # Initialize database
-        db_manager = get_current_db_manager()
-        session = db_manager.get_session()
+        switcher = DatabaseSwitcher()
+        current_db = switcher.get_current_database()
+        switcher.switch_database(db_name)
+        session = switcher.get_database_manager().get_session()
 
         # Create Excel writer object in memory
         output = io.BytesIO()
@@ -417,7 +419,6 @@ def create_excel_export():
         # Close the writer and get the data
         writer.close()
         session.close()
-        db_manager.dispose()
 
         output.seek(0)
         return output.getvalue()
@@ -425,3 +426,6 @@ def create_excel_export():
     except Exception as e:
         print(f"Error creating Excel export: {e}")
         return None
+    finally:
+        # Ensure we switch back to the original database
+        switcher.switch_database(current_db)
