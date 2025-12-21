@@ -11,6 +11,7 @@ from accounting_utils import (
 from translation_utils import t
 from helpers import format_currency
 from excel_export import create_excel_export
+from translation_utils import header_with_controls
 
 
 def create_year_end_closing_package(retained_earnings_account_id):
@@ -102,6 +103,8 @@ def perform_year_end_closing(retained_earnings_account_id):
         db_manager.dispose()
         return False, f"Error during year-end closing: {str(e)}"
 
+
+header_with_controls(t("year_end_closing"))
 
 st.warning(t("year_end_closing_info"))
 st.error(t("warning_year_end_closing"))

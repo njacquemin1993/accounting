@@ -6,6 +6,7 @@ import streamlit as st
 from database_switcher import DatabaseSwitcher
 from constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
 from translation_utils import t
+from translation_utils import header_with_controls
 
 
 @st.dialog(t("delete_database"))
@@ -217,8 +218,7 @@ def database_list():
 if "db_switcher" not in st.session_state:
     st.session_state.db_switcher = DatabaseSwitcher()
 
-# Database Switching Section
-st.subheader(t("database_management"))
+header_with_controls(t("database_management"))
 
 database_list()
 

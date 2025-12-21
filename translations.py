@@ -12,6 +12,8 @@ TRANSLATIONS = {
         "tab_result_sheet": "Result Sheet",
         "tab_balance_sheet": "Balance Sheet",
         "tab_database_management": "Database Management",
+        "tab_file_management": "File Management",
+        "tab_year_closing": "Year Closing",
         "language_selector": "Language",
         # Chart of Accounts tab
         "chart_of_accounts": "Chart of Accounts",
@@ -34,6 +36,7 @@ TRANSLATIONS = {
         "account_code_must_be_numeric": "Account code must be a number.",
         "initial_balance": "Initial Balance",
         "initial_balance_help": "Starting balance for this account (only for Active and Passive accounts)",
+        "balance": "Balance",
         # Categories
         "active": "Active",
         "passive": "Passive",
@@ -124,7 +127,6 @@ TRANSLATIONS = {
         "id": "ID",
         "code": "Code",
         "name": "Name",
-        "balance": "Balance",
         "balance_sheet_balanced": "Balance Sheet is balanced!",
         "balance_sheet_not_balanced": "Balance Sheet is not balanced. Difference:",
         "balance_verified": "Balance Verified",
@@ -218,6 +220,8 @@ TRANSLATIONS = {
         "tab_result_sheet": "Compte de Résultat",
         "tab_balance_sheet": "Bilan",
         "tab_database_management": "Gestion de Base de Données",
+        "tab_file_management": "Gestion de Fichiers",
+        "tab_year_closing": "Clôture Annuelle",
         "language_selector": "Langue",
         # Chart of Accounts tab
         "chart_of_accounts": "Plan Comptable",
@@ -237,9 +241,10 @@ TRANSLATIONS = {
         "account_code_range_passive": "Les comptes passifs doivent avoir des codes entre 2000-2999.",
         "account_code_range_expenses": "Les comptes de charges doivent avoir des codes entre 3000-3999.",
         "account_code_range_products": "Les comptes de produits doivent avoir des codes entre 6000-6999.",
-        "account_code_must_be_numeric": "Le code du compte doit être un nombre.",
+        "account_code_must_be_numeric": "Le code de compte doit être un nombre.",
         "initial_balance": "Solde Initial",
         "initial_balance_help": "Solde de départ pour ce compte (uniquement pour les comptes actifs et passifs)",
+        "balance": "Solde",
         # Categories
         "active": "Actif",
         "passive": "Passif",
@@ -330,7 +335,6 @@ TRANSLATIONS = {
         "id": "ID",
         "code": "Code",
         "name": "Nom",
-        "balance": "Solde",
         "balance_sheet_balanced": "Le bilan est équilibré !",
         "balance_sheet_not_balanced": "Le bilan n'est pas équilibré. Différence :",
         "balance_verified": "Solde Vérifié",
@@ -424,6 +428,8 @@ TRANSLATIONS = {
         "tab_result_sheet": "Gewinn- und Verlustrechnung",
         "tab_balance_sheet": "Bilanz",
         "tab_database_management": "Datenbankverwaltung",
+        "tab_file_management": "Dateiverwaltung",
+        "tab_year_closing": "Jahresabschluss",
         "language_selector": "Sprache",
         # Chart of Accounts tab
         "chart_of_accounts": "Kontenplan",
@@ -446,6 +452,7 @@ TRANSLATIONS = {
         "account_code_must_be_numeric": "Die Kontonummer muss eine Zahl sein.",
         "initial_balance": "Anfangssaldo",
         "initial_balance_help": "Startsaldo für dieses Konto (nur für Aktiv- und Passivkonten)",
+        "balance": "Saldo",
         # Categories
         "active": "Aktiv",
         "passive": "Passiv",
@@ -536,7 +543,6 @@ TRANSLATIONS = {
         "id": "ID",
         "code": "Code",
         "name": "Name",
-        "balance": "Saldo",
         "balance_sheet_balanced": "Die Bilanz ist ausgeglichen!",
         "balance_sheet_not_balanced": "Die Bilanz ist nicht ausgeglichen. Differenz:",
         "balance_verified": "Bilanz Verifiziert",

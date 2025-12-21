@@ -6,7 +6,7 @@ import streamlit as st
 import pandas as pd
 from database import Account, JournalEntry
 from database_switcher import get_current_db_manager
-from translation_utils import t, language_selector, header_with_controls
+from translation_utils import t, header_with_controls
 from helpers import (
     validate_account_code,
     get_category_display_map,
@@ -244,19 +244,7 @@ def show_add_account_dialog(session):
 
 
 # Page header with controls
-header_col1, header_col2, header_col3 = header_with_controls()
-
-with header_col1:
-    st.title(f"📊 {t('chart_of_accounts')}")
-
-with header_col2:
-    st.markdown("<br>", unsafe_allow_html=True)
-    language_selector()
-
-with header_col3:
-    st.markdown("<br>", unsafe_allow_html=True)
-
-st.markdown("---")
+header_with_controls(f"📊 {t('chart_of_accounts')}")
 
 # Initialize database and show content
 db_manager = get_database()

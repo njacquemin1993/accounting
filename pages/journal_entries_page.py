@@ -8,7 +8,7 @@ from datetime import datetime, date
 from database import Account, JournalEntry
 from database_switcher import get_current_db_manager
 from accounting_utils import validate_journal_entry
-from translation_utils import t, language_selector, header_with_controls
+from translation_utils import t, header_with_controls
 from helpers import has_sufficient_accounts, format_currency
 
 
@@ -206,19 +206,7 @@ session = db_manager.get_session()
 
 try:
     # Page header with controls
-    header_col1, header_col2, header_col3 = header_with_controls()
-
-    with header_col1:
-        st.title(f"📝 {t('journal_entries')}")
-
-    with header_col2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        language_selector()
-
-    with header_col3:
-        st.markdown("<br>", unsafe_allow_html=True)
-
-    st.markdown("---")
+    header_with_controls(f"📝 {t('journal_entries')}")
 
     # Display existing journal entries
     try:
