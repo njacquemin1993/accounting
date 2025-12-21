@@ -6,15 +6,10 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, date
 from database import Account, JournalEntry
-from database_switcher import get_current_db_manager
 from accounting_utils import validate_journal_entry
-from translation_utils import t, header_with_controls
+from translation_utils import t
 from helpers import has_sufficient_accounts, format_currency
-
-
-def get_database():
-    db_manager = get_current_db_manager()
-    return db_manager
+from pages.base_page import BasePage
 
 
 @st.dialog(t("edit_entry"))
@@ -201,106 +196,104 @@ def show_add_entry_dialog(session):
             st.rerun()
 
 
-db_manager = get_database()
-session = db_manager.get_session()
+class JournalEntriesPage(BasePage):
+    """Journal Entries Page."""
 
-try:
-    # Page header with controls
-    header_with_controls(f"📝 {t('journal_entries')}")
+    def __init__(self):
+        super().__init__(title="journal_entries", icon="📝")
 
-    # Display existing journal entries
-    try:
-        entries = (
-            session.query(JournalEntry)
-            .order_by(JournalEntry.date.desc())
-            .limit(20)
-            .all()
-        )
-    except Exception as e:
-        st.error(f"{t('error_loading_entries')}: {str(e)}")
-        entries = []
+    def content(self, session):
+        # Display existing journal entries
+        try:
+            entries = (
+                session.query(JournalEntry)
+                .order_by(JournalEntry.date.desc())
+                .limit(20)
+                .all()
+            )
+        except Exception as e:
+            st.error(f"{t('error_loading_entries')}: {str(e)}")
+            entries = []
 
-    st.subheader(t("edit_journal_entries"))
-    edit_col, add_col = st.columns([2, 1], vertical_alignment="bottom")
+        st.subheader(t("edit_journal_entries"))
+        edit_col, add_col = st.columns([2, 1], vertical_alignment="bottom")
 
-    with add_col:
-        if st.button(
-            t("add_new_journal_entry"), type="primary", use_container_width=True
-        ):
-            show_add_entry_dialog(session)
+        with add_col:
+            if st.button(
+                t("add_new_journal_entry"), type="primary", use_container_width=True
+            ):
+                show_add_entry_dialog(session)
 
-    if entries:
-        with edit_col:
-            # Create entry selection dropdown
-            entry_options = {}
+        if entries:
+            with edit_col:
+                # Create entry selection dropdown
+                entry_options = {}
+                for entry in entries:
+                    try:
+                        entry_label = f"{entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}"
+                        entry_options[entry_label] = entry.id
+                    except Exception:
+                        # Handle datetime formatting errors gracefully
+                        entry_label = (
+                            f"{entry.id} - [Invalid Date] - {entry.description}"
+                        )
+                        entry_options[entry_label] = entry.id
+
+                if entry_options:
+                    selected_entry_label = st.selectbox(
+                        t("select_entry_to_modify"), list(entry_options.keys())
+                    )
+
+                    if selected_entry_label:
+                        selected_entry_id = entry_options[selected_entry_label]
+
+                        # Edit and Delete buttons
+                        edit_col, delete_col = st.columns(2)
+
+                        with edit_col:
+                            if st.button(t("edit_entry"), use_container_width=True):
+                                show_edit_dialog(session, selected_entry_id)
+
+                        with delete_col:
+                            if st.button(
+                                t("delete_entry"),
+                                type="secondary",
+                                use_container_width=True,
+                            ):
+                                show_delete_dialog(session, selected_entry_id)
+
+            st.markdown("---")
+            st.subheader(t("recent_journal_entries"))
+            entry_data = []
             for entry in entries:
                 try:
-                    entry_label = f"{entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}"
-                    entry_options[entry_label] = entry.id
+                    entry_data.append(
+                        {
+                            "id": entry.id,
+                            t("date"): entry.date.strftime("%Y-%m-%d"),
+                            t("description"): entry.description,
+                            t(
+                                "debit_account"
+                            ): f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
+                            t(
+                                "credit_account"
+                            ): f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
+                            t("amount"): format_currency(entry.amount),
+                        }
+                    )
                 except Exception:
-                    # Handle datetime formatting errors gracefully
-                    entry_label = f"{entry.id} - [Invalid Date] - {entry.description}"
-                    entry_options[entry_label] = entry.id
+                    # Handle any display errors gracefully
+                    entry_data.append(
+                        {
+                            "id": entry.id,
+                            t("date"): "[Invalid Date]",
+                            t("description"): entry.description,
+                            t("debit_account"): "[Error loading account]",
+                            t("credit_account"): "[Error loading account]",
+                            t("amount"): format_currency(entry.amount),
+                        }
+                    )
 
-            if entry_options:
-                selected_entry_label = st.selectbox(
-                    t("select_entry_to_modify"), list(entry_options.keys())
-                )
-
-                if selected_entry_label:
-                    selected_entry_id = entry_options[selected_entry_label]
-
-                    # Edit and Delete buttons
-                    edit_col, delete_col = st.columns(2)
-
-                    with edit_col:
-                        if st.button(t("edit_entry"), use_container_width=True):
-                            show_edit_dialog(session, selected_entry_id)
-
-                    with delete_col:
-                        if st.button(
-                            t("delete_entry"),
-                            type="secondary",
-                            use_container_width=True,
-                        ):
-                            show_delete_dialog(session, selected_entry_id)
-
-        st.markdown("---")
-        st.subheader(t("recent_journal_entries"))
-        entry_data = []
-        for entry in entries:
-            try:
-                entry_data.append(
-                    {
-                        "id": entry.id,
-                        t("date"): entry.date.strftime("%Y-%m-%d"),
-                        t("description"): entry.description,
-                        t(
-                            "debit_account"
-                        ): f"{entry.debit_account.account_code} - {entry.debit_account.account_name}",
-                        t(
-                            "credit_account"
-                        ): f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
-                        t("amount"): format_currency(entry.amount),
-                    }
-                )
-            except Exception:
-                # Handle any display errors gracefully
-                entry_data.append(
-                    {
-                        "id": entry.id,
-                        t("date"): "[Invalid Date]",
-                        t("description"): entry.description,
-                        t("debit_account"): "[Error loading account]",
-                        t("credit_account"): "[Error loading account]",
-                        t("amount"): format_currency(entry.amount),
-                    }
-                )
-
-        if entry_data:
-            df = pd.DataFrame(entry_data).set_index("id")
-            st.dataframe(df, width="stretch")
-
-finally:
-    session.close()
-    db_manager.dispose()
+            if entry_data:
+                df = pd.DataFrame(entry_data).set_index("id")
+                st.dataframe(df, width="stretch")

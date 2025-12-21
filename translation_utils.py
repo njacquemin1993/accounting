@@ -78,16 +78,3 @@ def language_selector():
     if selected_lang and selected_lang != current_lang:
         set_language(selected_lang)
         st.rerun()
-
-
-def header_with_controls(title: str):
-    """Display page header with language selector and file management in the same row."""
-    header_col1, header_col2 = st.columns([3, 1])
-    with header_col1:
-        st.title(title)
-
-    with header_col2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        language_selector()
-
-    st.markdown("---")

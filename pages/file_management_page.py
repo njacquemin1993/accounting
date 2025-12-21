@@ -6,7 +6,7 @@ import streamlit as st
 from database_switcher import DatabaseSwitcher
 from constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
 from translation_utils import t
-from translation_utils import header_with_controls
+from pages.base_page import BasePage
 
 
 @st.dialog(t("delete_database"))
@@ -214,27 +214,33 @@ def database_list():
             download_db(db_name)
 
 
-# Initialize database switcher
-if "db_switcher" not in st.session_state:
-    st.session_state.db_switcher = DatabaseSwitcher()
+class FileManagementPage(BasePage):
+    def __init__(self):
+        super().__init__(title="file_management", icon="🗂️")
 
-header_with_controls(t("database_management"))
+    def content(self, session):
+        # Initialize database switcher
+        if "db_switcher" not in st.session_state:
+            st.session_state.db_switcher = DatabaseSwitcher()
 
-database_list()
+        database_list()
 
-st.markdown("---")
+        st.markdown("---")
 
-cols = st.columns(5)
-with cols[0]:
-    if st.button(
-        t("create_new_database"),
-        key="create_db_tab",
-        icon="➕",
-        use_container_width=True,
-    ):
-        create_db()
-with cols[1]:
-    if st.button(
-        t("upload_database"), key="upload_db_tab", icon="📤", use_container_width=True
-    ):
-        upload_db()
+        cols = st.columns(5)
+        with cols[0]:
+            if st.button(
+                t("create_new_database"),
+                key="create_db_tab",
+                icon="➕",
+                use_container_width=True,
+            ):
+                create_db()
+        with cols[1]:
+            if st.button(
+                t("upload_database"),
+                key="upload_db_tab",
+                icon="📤",
+                use_container_width=True,
+            ):
+                upload_db()
