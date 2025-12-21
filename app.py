@@ -11,6 +11,7 @@ from pages.chart_of_accounts_page import ChartOfAccountsPage
 from pages.file_management_page import FileManagementPage
 from pages.journal_entries_page import JournalEntriesPage
 from pages.result_sheet_page import ResultSheetPage
+from pages.stock_management_page import StockManagementPage
 from pages.year_closing_page import YearClosingPage
 
 
@@ -26,6 +27,7 @@ def main():
         ResultSheetPage(),
         BalanceSheetPage(),
         YearClosingPage(),
+        StockManagementPage(),
     ]
 
     # Create navigation with top position (naturally sticky)
