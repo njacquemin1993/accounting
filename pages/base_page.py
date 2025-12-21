@@ -29,7 +29,7 @@ class BasePage(StreamlitPage):
         st.markdown("---")
         st.markdown(
             "💼 **Accounting Application** | "
-            "[GitHub Repository](https://github.com/your-repo)"
+            "[GitHub Repository](https://github.com/njacquemin1993/accounting)"
         )
 
     def run(self):
