@@ -14,7 +14,6 @@ from helpers import (
     is_balance_sheet_category,
     format_currency,
 )
-from constants import DEFAULT_CURRENCY
 
 
 def get_database():
@@ -41,7 +40,7 @@ def show_edit_account_dialog(session, account_id):
     # Category selection with current value
     category_map = get_category_display_map(t)
     categories = list(category_map.values())
-    
+
     current_category_translated = category_map.get(account.category, t("active"))
     current_index = (
         categories.index(current_category_translated)

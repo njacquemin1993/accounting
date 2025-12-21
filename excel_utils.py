@@ -19,10 +19,10 @@ from constants import (
 def create_excel_formats(workbook):
     """
     Create standard Excel formats for accounting exports.
-    
+
     Args:
         workbook: xlsxwriter Workbook object
-        
+
     Returns:
         dict: Dictionary of format objects
     """
@@ -128,11 +128,11 @@ def format_account_name(account_code, account_name):
 def truncate_sheet_name(name, max_length=31):
     """
     Truncate sheet name to fit Excel's limitations.
-    
+
     Args:
         name: Original sheet name
         max_length: Maximum allowed length (Excel limit is 31)
-        
+
     Returns:
         str: Truncated sheet name
     """

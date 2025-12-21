@@ -3,7 +3,6 @@ Common helper functions to reduce code duplication across the application.
 """
 
 from constants import (
-    ACCOUNT_CATEGORIES,
     ACCOUNT_CODE_RANGES,
     CATEGORY_ACTIVE,
     CATEGORY_PASSIVE,
@@ -20,10 +19,10 @@ from constants import (
 def get_category_display_map(t):
     """
     Get a mapping from internal category names to translated display names.
-    
+
     Args:
         t: Translation function
-        
+
     Returns:
         dict: Mapping of category names to translations
     """
@@ -38,10 +37,10 @@ def get_category_display_map(t):
 def get_reverse_category_map(t):
     """
     Get a mapping from translated display names to internal category names.
-    
+
     Args:
         t: Translation function
-        
+
     Returns:
         dict: Mapping of translations to category names
     """
@@ -56,12 +55,12 @@ def get_reverse_category_map(t):
 def validate_account_code(account_code: str, category: str, t) -> tuple[bool, str]:
     """
     Validate account code based on category.
-    
+
     Args:
         account_code: The account code to validate
         category: The account category
         t: Translation function
-        
+
     Returns:
         tuple: (is_valid, error_message)
     """
@@ -98,17 +97,17 @@ def is_credit_balance_category(category: str) -> bool:
 def get_balance_side(balance: float, category: str) -> tuple[str, str]:
     """
     Determine which side (debit/credit) a balance should be displayed on.
-    
+
     Args:
         balance: The account balance
         category: The account category
-        
+
     Returns:
         tuple: (debit_value, credit_value) - one will be the balance, other will be empty string
     """
     debit_value = ""
     credit_value = ""
-    
+
     if balance > 0:
         if is_debit_balance_category(category):
             debit_value = balance
@@ -119,7 +118,7 @@ def get_balance_side(balance: float, category: str) -> tuple[str, str]:
             credit_value = abs(balance)
         elif is_credit_balance_category(category):
             debit_value = abs(balance)
-            
+
     return debit_value, credit_value
 
 
@@ -136,11 +135,11 @@ def has_sufficient_accounts(accounts_count: int) -> bool:
 def format_currency(amount: float, currency: str = DEFAULT_CURRENCY) -> str:
     """
     Format an amount as currency string.
-    
+
     Args:
         amount: The amount to format
         currency: The currency code (defaults to DEFAULT_CURRENCY)
-        
+
     Returns:
         str: Formatted currency string (e.g., "CHF 1,234.56")
     """

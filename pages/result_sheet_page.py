@@ -54,7 +54,7 @@ with col1:
             products_data.append(
                 {
                     t("account_column"): f"{product['code']} - {product['name']}",
-                    t("amount_column"): format_currency(product['balance']),
+                    t("amount_column"): format_currency(product["balance"]),
                 }
             )
 
@@ -69,9 +69,9 @@ with col1:
         products_data.append(
             {
                 t("account_column"): t("total_products"),
-                t(
-                    "amount_column"
-                ): format_currency(income_statement_data['total_products']),
+                t("amount_column"): format_currency(
+                    income_statement_data["total_products"]
+                ),
             }
         )
 
@@ -91,7 +91,7 @@ with col2:
             expenses_data.append(
                 {
                     t("account_column"): f"{expense['code']} - {expense['name']}",
-                    t("amount_column"): format_currency(expense['balance']),
+                    t("amount_column"): format_currency(expense["balance"]),
                 }
             )
 
@@ -106,9 +106,9 @@ with col2:
         expenses_data.append(
             {
                 t("account_column"): t("total_expenses"),
-                t(
-                    "amount_column"
-                ): format_currency(income_statement_data['total_expenses']),
+                t("amount_column"): format_currency(
+                    income_statement_data["total_expenses"]
+                ),
             }
         )
 
@@ -142,12 +142,12 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(
-        t("total_products"), format_currency(income_statement_data['total_products'])
+        t("total_products"), format_currency(income_statement_data["total_products"])
     )
 
 with col2:
     st.metric(
-        t("total_expenses"), format_currency(income_statement_data['total_expenses'])
+        t("total_expenses"), format_currency(income_statement_data["total_expenses"])
     )
 
 with col3:

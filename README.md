@@ -71,35 +71,6 @@ The application follows a modular architecture with clear separation of concerns
 - `accounting.db`: SQLite database (auto-created on first run)
 - `requirements.txt`: Python package dependencies
 
-## Default Chart of Accounts
-
-The application comes pre-configured with a basic chart of accounts:
-
-### Assets (Active)
-- 1000 - Cash
-- 1100 - Accounts Receivable
-- 1200 - Inventory
-- 1500 - Equipment
-
-### Liabilities (Passive)
-- 2000 - Accounts Payable
-- 2100 - Short-term Loans
-- 2500 - Long-term Debt
-
-### Equity (Passive)
-- 3000 - Owner's Equity
-- 3100 - Retained Earnings
-
-### Revenue (Products)
-- 4000 - Sales Revenue
-- 4100 - Service Revenue
-
-### Expenses
-- 5000 - Cost of Goods Sold
-- 5100 - Rent Expense
-- 5200 - Utilities Expense
-- 5300 - Marketing Expense
-
 ## Database
 
 The application uses SQLite for data storage. The database file (`accounting.db`) will be created automatically in the same directory as the application.
@@ -135,15 +106,3 @@ This project follows professional coding standards:
 - **Modular Architecture**: Focused modules with single responsibilities
 - **Type Hints**: Function signatures include type information where appropriate
 - **Documentation**: Functions include docstrings explaining purpose and parameters
-
-See `REFACTORING_SUMMARY.md` for details on code quality improvements.
-
-## Contributing
-
-This is a simple educational project. Feel free to fork and enhance it with additional features like:
-- Cash flow statement
-- Account reconciliation
-- User authentication and multi-user support
-- Multi-company/multi-entity support
-- Advanced reporting and analytics
-- Budget tracking and variance analysis

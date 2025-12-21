@@ -9,7 +9,6 @@ from accounting_utils import get_balance_sheet_data, get_income_statement_data
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
 from helpers import format_currency
-from constants import BALANCE_ROUNDING_PRECISION
 
 
 def get_database():
@@ -51,7 +50,7 @@ if balance_sheet_data["active"]:
         active_data.append(
             {
                 t("account_column"): f"{account['code']} - {account['name']}",
-                t("amount_column"): format_currency(account['balance']),
+                t("amount_column"): format_currency(account["balance"]),
             }
         )
 
@@ -62,7 +61,7 @@ if balance_sheet_data["passive"]:
         passive_data.append(
             {
                 t("account_column"): f"{account['code']} - {account['name']}",
-                t("amount_column"): format_currency(account['balance']),
+                t("amount_column"): format_currency(account["balance"]),
             }
         )
 
@@ -93,7 +92,7 @@ active_data.append({t("account_column"): "", t("amount_column"): ""})
 active_data.append(
     {
         t("account_column"): t("total_active"),
-        t("amount_column"): format_currency(balance_sheet_data['total_active']),
+        t("amount_column"): format_currency(balance_sheet_data["total_active"]),
     }
 )
 

@@ -9,8 +9,7 @@ from database import DatabaseManager, Account, JournalEntry
 from accounting_utils import validate_journal_entry
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
-from helpers import format_account_option, has_sufficient_accounts, format_currency
-from constants import MIN_ACCOUNTS_FOR_JOURNAL_ENTRY
+from helpers import has_sufficient_accounts, format_currency
 
 
 def get_database():

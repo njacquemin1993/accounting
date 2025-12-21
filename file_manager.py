@@ -93,7 +93,9 @@ class FileManager:
                     return True
                 except PermissionError as e:
                     if attempt < FILE_MOVE_MAX_ATTEMPTS - 1:
-                        print(f"Attempt {attempt + 1} failed, retrying in {FILE_OPERATION_RETRY_DELAY}s: {e}")
+                        print(
+                            f"Attempt {attempt + 1} failed, retrying in {FILE_OPERATION_RETRY_DELAY}s: {e}"
+                        )
                         time.sleep(FILE_OPERATION_RETRY_DELAY)
                     else:
                         print(

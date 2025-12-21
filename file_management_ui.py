@@ -12,6 +12,7 @@ from database import DatabaseManager, Account, JournalEntry
 from accounting_utils import (
     get_income_statement_data,
     get_balance_sheet_data,
+    get_account_balance,
 )
 from translation_utils import t
 from helpers import format_currency

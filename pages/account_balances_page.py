@@ -134,7 +134,9 @@ if not trial_balance.empty:
     )
 
     # Format the balance column
-    display_df[t("balance")] = display_df[t("balance")].apply(lambda x: format_currency(x))
+    display_df[t("balance")] = display_df[t("balance")].apply(
+        lambda x: format_currency(x)
+    )
 
     # Check for clear selection flag
     if st.session_state.get("clear_selection", False):
