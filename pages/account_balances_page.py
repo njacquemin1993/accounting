@@ -40,14 +40,14 @@ def show_account_details_dialog(session, account_id, account_label):
         )
 
         # Display using st.dataframe for scrollable content in dialog
-        st.dataframe(display_df, use_container_width=True)
+        st.dataframe(display_df, width="stretch")
     else:
         st.info(t("no_entries_found"))
 
     # Close button
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
-        if st.button(t("close"), use_container_width=True, type="primary"):
+        if st.button(t("close"), width="stretch", type="primary"):
             # Clear the selection by setting a session state flag
             st.session_state.clear_selection = True
             st.rerun()

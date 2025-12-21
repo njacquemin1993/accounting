@@ -73,7 +73,7 @@ def show_edit_dialog(session, entry_id):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button(t("update_entry"), use_container_width=True, type="primary"):
+        if st.button(t("update_entry"), width="stretch", type="primary"):
             if edit_description and edit_amount > 0:
                 edit_debit_account_id = account_options[edit_debit_account]
                 edit_credit_account_id = account_options[edit_credit_account]
@@ -98,7 +98,7 @@ def show_edit_dialog(session, entry_id):
                 st.error(t("invalid_entry"))
 
     with col2:
-        if st.button(t("cancel"), use_container_width=True):
+        if st.button(t("cancel"), width="stretch"):
             st.rerun()
 
 
@@ -119,14 +119,14 @@ def show_delete_dialog(session, entry_id):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button(t("confirm_delete"), use_container_width=True, type="primary"):
+        if st.button(t("confirm_delete"), width="stretch", type="primary"):
             session.delete(entry)
             session.commit()
             st.success(t("entry_deleted"))
             st.rerun()
 
     with col2:
-        if st.button(t("cancel"), use_container_width=True):
+        if st.button(t("cancel"), width="stretch"):
             st.rerun()
 
 
@@ -164,7 +164,7 @@ def show_add_entry_dialog(session):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button(t("add_entry"), use_container_width=True, type="primary"):
+        if st.button(t("add_entry"), width="stretch", type="primary"):
             if description and amount > 0:
                 debit_account_id = account_options[debit_account]
                 credit_account_id = account_options[credit_account]
@@ -192,7 +192,7 @@ def show_add_entry_dialog(session):
                 st.error(t("invalid_entry"))
 
     with col2:
-        if st.button(t("cancel"), use_container_width=True):
+        if st.button(t("cancel"), width="stretch"):
             st.rerun()
 
 
@@ -219,9 +219,7 @@ class JournalEntriesPage(BasePage):
         edit_col, add_col = st.columns([2, 1], vertical_alignment="bottom")
 
         with add_col:
-            if st.button(
-                t("add_new_journal_entry"), type="primary", use_container_width=True
-            ):
+            if st.button(t("add_new_journal_entry"), type="primary", width="stretch"):
                 show_add_entry_dialog(session)
 
         if entries:
@@ -251,14 +249,14 @@ class JournalEntriesPage(BasePage):
                         edit_col, delete_col = st.columns(2)
 
                         with edit_col:
-                            if st.button(t("edit_entry"), use_container_width=True):
+                            if st.button(t("edit_entry"), width="stretch"):
                                 show_edit_dialog(session, selected_entry_id)
 
                         with delete_col:
                             if st.button(
                                 t("delete_entry"),
                                 type="secondary",
-                                use_container_width=True,
+                                width="stretch",
                             ):
                                 show_delete_dialog(session, selected_entry_id)
 

@@ -200,7 +200,7 @@ def show_stock_journal_dialog(item_id: int):
                 )
 
             df = pd.DataFrame(data)
-            st.dataframe(df, use_container_width=True, hide_index=True)
+            st.dataframe(df, width="stretch", hide_index=True)
         else:
             st.info(t("no_stock_entries"))
 

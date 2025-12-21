@@ -71,9 +71,7 @@ def render_database_switcher_sidebar():
             with st.expander(t("delete_database")):
                 # Don't allow deleting the current database or default database
                 deletable_databases = [
-                    db
-                    for db in available_databases
-                    if db != current_db and db != "default_accounting"
+                    db for db in available_databases if db != current_db
                 ]
 
                 if deletable_databases:
@@ -161,7 +159,7 @@ def render_database_switcher_main():
                             st.error(t("database_switch_error"))
 
             with col3:
-                if db_name != current_db and db_name != "default_accounting":
+                if db_name != current_db:
                     if st.button(
                         "🗑️", key=f"delete_{db_name}", help=t("delete_database")
                     ):

@@ -55,7 +55,7 @@ EXCEL_COLOR_NET_INCOME = "#E6F7FF"
 
 # Database Configuration
 DEFAULT_SERVER_FILES_DIR = "server_files"
-DEFAULT_DB_NAME = "default_accounting.db"
+DEFAULT_DB_NAME = "default.db"
 
 # Database Management
 DATABASE_EXTENSION = ".db"

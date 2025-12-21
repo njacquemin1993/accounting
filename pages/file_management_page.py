@@ -34,7 +34,7 @@ def export_db(db_name):
                         file_name=filename,
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         key="download_excel_file",
-                        use_container_width=True,
+                        width="stretch",
                         type="primary",
                     ):
                         st.rerun()
@@ -47,7 +47,7 @@ def export_db(db_name):
         if st.button(
             t("cancel"),
             key="cancel_export_excel_dialog",
-            use_container_width=True,
+            width="stretch",
         ):
             st.rerun()
 
@@ -96,14 +96,12 @@ def download_db(db_name):
             file_name=db_name + DATABASE_EXTENSION,
             mime="application/octet-stream",
             type="primary",
-            use_container_width=True,
+            width="stretch",
         ):
             st.success(t("database_download_started"))
             st.rerun()
     with cols[1]:
-        if st.button(
-            t("cancel"), key="cancel_download_dialog", use_container_width=True
-        ):
+        if st.button(t("cancel"), key="cancel_download_dialog", width="stretch"):
             st.rerun()
 
 
@@ -284,7 +282,7 @@ class FileManagementPage(BasePage):
                 t("create_new_database"),
                 key="create_db_tab",
                 icon="➕",
-                use_container_width=True,
+                width="stretch",
             ):
                 create_db()
         with cols[1]:
@@ -292,6 +290,6 @@ class FileManagementPage(BasePage):
                 t("upload_database"),
                 key="upload_db_tab",
                 icon="📤",
-                use_container_width=True,
+                width="stretch",
             ):
                 upload_db()

@@ -176,7 +176,7 @@ class YearClosingPage(BasePage):
                     t("start_year_end_closing"),
                     type="primary",
                     disabled=not confirm,
-                    use_container_width=True,
+                    width="stretch",
                 ):
                     # Create progress tracking
                     progress_bar = st.progress(0)
@@ -229,7 +229,7 @@ class YearClosingPage(BasePage):
                                 file_name=f"year_end_closing_{timestamp}.zip",
                                 mime="application/zip",
                                 type="secondary",
-                                use_container_width=True,
+                                width="stretch",
                             )
 
                         with col2:
@@ -239,7 +239,7 @@ class YearClosingPage(BasePage):
                                 file_name=f"backup_{timestamp}.db",
                                 mime="application/octet-stream",
                                 type="secondary",
-                                use_container_width=True,
+                                width="stretch",
                             )
 
                         with col3:
@@ -249,7 +249,7 @@ class YearClosingPage(BasePage):
                                 file_name=f"export_{timestamp}.xlsx",
                                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                 type="secondary",
-                                use_container_width=True,
+                                width="stretch",
                             )
 
                         # Clear session state to refresh the app

@@ -65,7 +65,7 @@ def show_edit_account_dialog(session, account_id):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button(t("update_account"), use_container_width=True, type="primary"):
+        if st.button(t("update_account"), width="stretch", type="primary"):
             if edit_code and edit_name:
                 # Validate account code for the category
                 is_valid, validation_error = validate_account_code(
@@ -99,7 +99,7 @@ def show_edit_account_dialog(session, account_id):
                 st.error(t("fill_all_fields"))
 
     with col2:
-        if st.button(t("cancel"), use_container_width=True):
+        if st.button(t("cancel"), width="stretch"):
             st.rerun()
 
 
@@ -132,25 +132,23 @@ def show_delete_account_dialog(session, account_id):
         col1, col2, col3 = st.columns([1, 1, 1])
 
         with col1:
-            if st.button(
-                t("deactivate_account"), use_container_width=True, type="primary"
-            ):
+            if st.button(t("deactivate_account"), width="stretch", type="primary"):
                 account.is_active = False
                 session.commit()
                 st.success(t("account_deactivated_success"))
                 st.rerun()
 
         with col2:
-            if st.button(t("force_delete"), use_container_width=True, type="secondary"):
+            if st.button(t("force_delete"), width="stretch", type="secondary"):
                 st.warning(t("force_delete_warning"))
-                if st.button(t("confirm_force_delete"), use_container_width=True):
+                if st.button(t("confirm_force_delete"), width="stretch"):
                     session.delete(account)
                     session.commit()
                     st.success(t("account_deleted"))
                     st.rerun()
 
         with col3:
-            if st.button(t("cancel"), use_container_width=True):
+            if st.button(t("cancel"), width="stretch"):
                 st.rerun()
     else:
         st.warning(t("confirm_delete_message"))
@@ -158,14 +156,14 @@ def show_delete_account_dialog(session, account_id):
         col1, col2 = st.columns([1, 1])
 
         with col1:
-            if st.button(t("confirm_delete"), use_container_width=True, type="primary"):
+            if st.button(t("confirm_delete"), width="stretch", type="primary"):
                 session.delete(account)
                 session.commit()
                 st.success(t("account_deleted"))
                 st.rerun()
 
         with col2:
-            if st.button(t("cancel"), use_container_width=True):
+            if st.button(t("cancel"), width="stretch"):
                 st.rerun()
 
 
@@ -202,7 +200,7 @@ def show_add_account_dialog(session):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button(t("add_account"), use_container_width=True, type="primary"):
+        if st.button(t("add_account"), width="stretch", type="primary"):
             if account_code and account_name:
                 # Validate account code for the category
                 is_valid, validation_error = validate_account_code(
@@ -235,7 +233,7 @@ def show_add_account_dialog(session):
                 st.error(t("fill_all_fields"))
 
     with col2:
-        if st.button(t("cancel"), use_container_width=True):
+        if st.button(t("cancel"), width="stretch"):
             st.rerun()
 
 
@@ -257,9 +255,7 @@ class ChartOfAccountsPage(BasePage):
         )
 
         with add_col:
-            if st.button(
-                t("add_new_account"), type="primary", use_container_width=True
-            ):
+            if st.button(t("add_new_account"), type="primary", width="stretch"):
                 show_add_account_dialog(session)
 
         if accounts:
@@ -282,14 +278,14 @@ class ChartOfAccountsPage(BasePage):
                         edit_col, delete_col = st.columns(2)
 
                         with edit_col:
-                            if st.button(t("edit_account"), use_container_width=True):
+                            if st.button(t("edit_account"), width="stretch"):
                                 show_edit_account_dialog(session, selected_account_id)
 
                         with delete_col:
                             if st.button(
                                 t("delete_account"),
                                 type="secondary",
-                                use_container_width=True,
+                                width="stretch",
                             ):
                                 show_delete_account_dialog(session, selected_account_id)
 
