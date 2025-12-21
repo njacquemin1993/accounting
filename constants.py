@@ -1,0 +1,82 @@
+"""
+Constants for the accounting application.
+Centralizes magic numbers, strings, and configuration values.
+"""
+
+# Account Categories
+CATEGORY_ACTIVE = "Active"
+CATEGORY_PASSIVE = "Passive"
+CATEGORY_EXPENSES = "Expenses"
+CATEGORY_PRODUCTS = "Products"
+
+ACCOUNT_CATEGORIES = [
+    CATEGORY_ACTIVE,
+    CATEGORY_PASSIVE,
+    CATEGORY_EXPENSES,
+    CATEGORY_PRODUCTS,
+]
+
+# Account Code Ranges
+ACCOUNT_CODE_RANGES = {
+    CATEGORY_ACTIVE: (1000, 1999),
+    CATEGORY_PASSIVE: (2000, 2999),
+    CATEGORY_EXPENSES: (3000, 3999),
+    CATEGORY_PRODUCTS: (6000, 6999),
+}
+
+# Categories with normal debit balance
+DEBIT_BALANCE_CATEGORIES = [CATEGORY_ACTIVE, CATEGORY_EXPENSES]
+
+# Categories with normal credit balance
+CREDIT_BALANCE_CATEGORIES = [CATEGORY_PASSIVE, CATEGORY_PRODUCTS]
+
+# Categories that support base/opening balance
+BALANCE_SHEET_CATEGORIES = [CATEGORY_ACTIVE, CATEGORY_PASSIVE]
+
+# Currency
+DEFAULT_CURRENCY = "CHF"
+
+# Excel Export Configuration
+EXCEL_MAX_SHEET_NAME_LENGTH = 31
+EXCEL_SHEET_NAME_TRUNCATE_LENGTH = 20
+
+# Excel Column Widths
+EXCEL_COLUMN_WIDTH_DATE = 12
+EXCEL_COLUMN_WIDTH_DESCRIPTION = 30
+EXCEL_COLUMN_WIDTH_ACCOUNT = 25
+EXCEL_COLUMN_WIDTH_AMOUNT = 15
+EXCEL_COLUMN_WIDTH_SEPARATOR = 3
+
+# Excel Colors
+EXCEL_COLOR_HEADER = "#D7E4BC"
+EXCEL_COLOR_TOTAL = "#E6E6FA"
+EXCEL_COLOR_SECTION = "#F0F0F0"
+EXCEL_COLOR_STARTING_BALANCE = "#FFF8DC"
+EXCEL_COLOR_NET_INCOME = "#E6F7FF"
+
+# Database Configuration
+DEFAULT_DB_PATH = "accounting.db"
+DEFAULT_SERVER_FILES_DIR = "server_files"
+
+# File Retry Configuration
+FILE_OPERATION_MAX_ATTEMPTS = 5
+FILE_OPERATION_RETRY_DELAY = 0.5
+FILE_MOVE_MAX_ATTEMPTS = 3
+FILE_CLOSE_DELAY = 0.1
+
+# Available Languages
+AVAILABLE_LANGUAGES = ["en", "fr", "de"]
+DEFAULT_LANGUAGE = "en"
+
+# Language Display Names with Flags
+LANGUAGE_OPTIONS = {
+    "en": "🇺🇸 English",
+    "fr": "🇫🇷 Français",
+    "de": "🇩🇪 Deutsch",
+}
+
+# Minimum Accounts Required
+MIN_ACCOUNTS_FOR_JOURNAL_ENTRY = 2
+
+# Rounding Precision
+BALANCE_ROUNDING_PRECISION = 0.01

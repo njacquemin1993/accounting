@@ -9,6 +9,7 @@ from database import DatabaseManager, Account, JournalEntry
 from accounting_utils import validate_journal_entry
 from translation_utils import t, language_selector, header_with_controls
 from file_management_ui import file_management_button
+from helpers import has_sufficient_accounts, format_currency
 
 
 def get_database():
@@ -117,7 +118,7 @@ def show_delete_dialog(session, entry_id):
     st.write(
         f"**{t('entry')}:** {entry.id} - {entry.date.strftime('%Y-%m-%d')} - {entry.description}"
     )
-    st.write(f"**{t('amount')}:** CHF {entry.amount:,.2f}")
+    st.write(f"**{t('amount')}:** {format_currency(entry.amount)}")
     st.warning(t("confirm_delete_message"))
 
     col1, col2 = st.columns([1, 1])
@@ -145,7 +146,7 @@ def show_add_entry_dialog(session):
         .all()
     )
 
-    if len(active_accounts) < 2:
+    if not has_sufficient_accounts(len(active_accounts)):
         st.warning(t("need_two_accounts"))
         return
 
@@ -293,7 +294,7 @@ try:
                         t(
                             "credit_account"
                         ): f"{entry.credit_account.account_code} - {entry.credit_account.account_name}",
-                        t("amount"): f"CHF {entry.amount:,.2f}",
+                        t("amount"): format_currency(entry.amount),
                     }
                 )
             except Exception:
@@ -305,7 +306,7 @@ try:
                         t("description"): entry.description,
                         t("debit_account"): "[Error loading account]",
                         t("credit_account"): "[Error loading account]",
-                        t("amount"): f"CHF {entry.amount:,.2f}",
+                        t("amount"): format_currency(entry.amount),
                     }
                 )
 

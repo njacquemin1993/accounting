@@ -5,6 +5,13 @@ Utility functions for accounting calculations and operations.
 from sqlalchemy.orm import Session
 from database import Account, JournalEntry
 import pandas as pd
+from constants import (
+    CATEGORY_ACTIVE,
+    CATEGORY_PASSIVE,
+    CATEGORY_EXPENSES,
+    CATEGORY_PRODUCTS,
+    DEBIT_BALANCE_CATEGORIES,
+)
 
 
 def get_account_balance(session: Session, account_id: int) -> float:
@@ -35,11 +42,11 @@ def get_account_balance(session: Session, account_id: int) -> float:
     credit_sum = sum([entry[0] for entry in credit_total])
 
     # Calculate balance based on category
-    if account.category in ["Active", "Expenses"]:
+    if account.category in DEBIT_BALANCE_CATEGORIES:
         # Normal debit balance (Active = Assets, Expenses = Expenses)
         # For Active accounts, add base balance; for Expenses, base balance is always 0
         balance_from_entries = debit_sum - credit_sum
-        if account.category == "Active":
+        if account.category == CATEGORY_ACTIVE:
             return base_balance + balance_from_entries
         else:
             return balance_from_entries
@@ -47,7 +54,7 @@ def get_account_balance(session: Session, account_id: int) -> float:
         # Normal credit balance (Passive = Liabilities + Equity, Products = Revenue)
         # For Passive accounts, add base balance; for Products, base balance is always 0
         balance_from_entries = credit_sum - debit_sum
-        if account.category == "Passive":
+        if account.category == CATEGORY_PASSIVE:
             return base_balance + balance_from_entries
         else:
             return balance_from_entries
@@ -88,9 +95,9 @@ def get_balance_sheet_data(session: Session) -> dict:
             "balance": balance,
         }
 
-        if account.category == "Active":
+        if account.category == CATEGORY_ACTIVE:
             active.append(account_data)
-        elif account.category == "Passive":
+        elif account.category == CATEGORY_PASSIVE:
             passive.append(account_data)
 
     total_active = sum([acc["balance"] for acc in active])
@@ -119,9 +126,9 @@ def get_income_statement_data(session: Session) -> dict:
             "balance": balance,
         }
 
-        if account.category == "Products":
+        if account.category == CATEGORY_PRODUCTS:
             products.append(account_data)
-        elif account.category == "Expenses":
+        elif account.category == CATEGORY_EXPENSES:
             expenses.append(account_data)
 
     total_products = sum([acc["balance"] for acc in products])

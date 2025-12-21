@@ -5,15 +5,25 @@ File management utilities for the accounting application.
 import os
 import shutil
 import sqlite3
+import time
+import gc
 from datetime import datetime
 from database import DatabaseManager
+from constants import (
+    DEFAULT_DB_PATH,
+    DEFAULT_SERVER_FILES_DIR,
+    FILE_OPERATION_MAX_ATTEMPTS,
+    FILE_OPERATION_RETRY_DELAY,
+    FILE_MOVE_MAX_ATTEMPTS,
+    FILE_CLOSE_DELAY,
+)
 
 
 class FileManager:
     """Handles database file operations."""
 
     def __init__(
-        self, current_db_path="accounting.db", server_files_dir="server_files"
+        self, current_db_path=DEFAULT_DB_PATH, server_files_dir=DEFAULT_SERVER_FILES_DIR
     ):
         self.current_db_path = current_db_path
         self.server_files_dir = server_files_dir
@@ -49,27 +59,22 @@ class FileManager:
             del db_manager
 
             # Force garbage collection to ensure all connections are closed
-            import gc
-
             gc.collect()
 
             # Small delay to ensure file handles are released
-            import time
-
-            time.sleep(0.1)
+            time.sleep(FILE_CLOSE_DELAY)
 
             # Now safely replace the existing database
             if os.path.exists(target_path):
                 # Try to remove the existing file
-                max_attempts = 5
-                for attempt in range(max_attempts):
+                for attempt in range(FILE_OPERATION_MAX_ATTEMPTS):
                     try:
                         os.remove(target_path)
                         break
                     except PermissionError:
-                        if attempt < max_attempts - 1:
+                        if attempt < FILE_OPERATION_MAX_ATTEMPTS - 1:
                             # Wait a bit and try again
-                            time.sleep(0.5)
+                            time.sleep(FILE_OPERATION_RETRY_DELAY)
                         else:
                             # If we can't remove it, try to overwrite it
                             try:
@@ -82,18 +87,19 @@ class FileManager:
                                 return False
 
             # Move the temp database to the target location
-            max_move_attempts = 3
-            for attempt in range(max_move_attempts):
+            for attempt in range(FILE_MOVE_MAX_ATTEMPTS):
                 try:
                     shutil.move(temp_path, target_path)
                     return True
                 except PermissionError as e:
-                    if attempt < max_move_attempts - 1:
-                        print(f"Attempt {attempt + 1} failed, retrying in 0.5s: {e}")
-                        time.sleep(0.5)
+                    if attempt < FILE_MOVE_MAX_ATTEMPTS - 1:
+                        print(
+                            f"Attempt {attempt + 1} failed, retrying in {FILE_OPERATION_RETRY_DELAY}s: {e}"
+                        )
+                        time.sleep(FILE_OPERATION_RETRY_DELAY)
                     else:
                         print(
-                            f"Error moving temp file after {max_move_attempts} attempts: {e}"
+                            f"Error moving temp file after {FILE_MOVE_MAX_ATTEMPTS} attempts: {e}"
                         )
                         if os.path.exists(temp_path):
                             os.remove(temp_path)
