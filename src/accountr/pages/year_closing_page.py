@@ -2,16 +2,16 @@ import streamlit as st
 import io
 import zipfile
 from datetime import datetime
-from accounting.database import Account, JournalEntry
-from accounting.database_switcher import get_current_db_manager, DatabaseSwitcher
-from accounting.accounting_utils import (
+from accountr.database import Account, JournalEntry
+from accountr.database_switcher import get_current_db_manager, DatabaseSwitcher
+from accountr.accounting_utils import (
     get_income_statement_data,
     get_account_balance,
 )
-from accounting.translation_utils import t
-from accounting.helpers import format_currency
-from accounting.excel_export import create_excel_export
-from accounting.pages.base_page import BasePage
+from accountr.translation_utils import t
+from accountr.helpers import format_currency
+from accountr.excel_export import create_excel_export
+from accountr.pages.base_page import BasePage
 
 
 def create_year_end_closing_package(retained_earnings_account_id):

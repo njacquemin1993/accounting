@@ -8,13 +8,13 @@ import streamlit as st
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from accounting.database import DatabaseManager
-from accounting.constants import (
+from accountr.database import DatabaseManager
+from accountr.constants import (
     DEFAULT_SERVER_FILES_DIR,
     DEFAULT_DB_NAME,
     DATABASE_EXTENSION,
 )
-from accounting.translation_utils import t
+from accountr.translation_utils import t
 
 
 class DatabaseSwitcher:

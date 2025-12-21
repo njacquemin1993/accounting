@@ -5,7 +5,7 @@ Translation strings for the accounting application.
 TRANSLATIONS = {
     "en": {
         # App title and main navigation
-        "app_title": "Simple Accounting System",
+        "app_title": "Accountr",
         "tab_chart_of_accounts": "Chart of Accounts",
         "tab_journal_entries": "Journal Entries",
         "tab_account_balances": "Account Balances",
@@ -289,7 +289,7 @@ TRANSLATIONS = {
     },
     "fr": {
         # App title and main navigation
-        "app_title": "Système Comptable Simple",
+        "app_title": "Accountr",
         "tab_chart_of_accounts": "Plan Comptable",
         "tab_journal_entries": "Écritures",
         "tab_account_balances": "Soldes des Comptes",
@@ -575,7 +575,7 @@ TRANSLATIONS = {
     },
     "de": {
         # App title and main navigation
-        "app_title": "Einfaches Buchhaltungssystem",
+        "app_title": "Accountr",
         "tab_chart_of_accounts": "Kontenplan",
         "tab_journal_entries": "Buchungen",
         "tab_account_balances": "Kontosalden",

@@ -4,11 +4,11 @@ File management UI components for the accounting application.
 
 import streamlit as st
 from datetime import datetime
-from accounting.database_switcher import DatabaseSwitcher
-from accounting.constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
-from accounting.translation_utils import t
-from accounting.pages.base_page import BasePage
-from accounting.excel_export import create_excel_export
+from accountr.database_switcher import DatabaseSwitcher
+from accountr.constants import FILE_LIST_COLUMNS_WIDTH, DATABASE_EXTENSION
+from accountr.translation_utils import t
+from accountr.pages.base_page import BasePage
+from accountr.excel_export import create_excel_export
 
 
 @st.dialog(t("export_as_excel"))

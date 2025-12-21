@@ -4,13 +4,13 @@ Balance Sheet page for navigation.
 
 import streamlit as st
 import pandas as pd
-from accounting.accounting_utils import (
+from accountr.accounting_utils import (
     get_balance_sheet_data,
     get_income_statement_data,
 )
-from accounting.translation_utils import t
-from accounting.helpers import format_currency
-from accounting.pages.base_page import BasePage
+from accountr.translation_utils import t
+from accountr.helpers import format_currency
+from accountr.pages.base_page import BasePage
 
 
 class BalanceSheetPage(BasePage):

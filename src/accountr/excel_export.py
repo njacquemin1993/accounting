@@ -5,9 +5,9 @@ Breaks down the large excel export function into smaller, focused functions.
 
 import pandas as pd
 from datetime import datetime
-from accounting.database import JournalEntry
-from accounting.accounting_utils import get_account_entries, get_account_balance
-from accounting.excel_utils import (
+from accountr.database import JournalEntry
+from accountr.accounting_utils import get_account_entries, get_account_balance
+from accountr.excel_utils import (
     set_journal_column_widths,
     set_account_detail_column_widths,
     set_two_column_report_widths,
@@ -15,23 +15,23 @@ from accounting.excel_utils import (
     format_account_name,
     truncate_sheet_name,
 )
-from accounting.helpers import (
+from accountr.helpers import (
     is_balance_sheet_category,
     get_balance_side,
 )
-from accounting.accounting_utils import (
+from accountr.accounting_utils import (
     get_income_statement_data,
     get_balance_sheet_data,
 )
 import io
-from accounting.database import Account
-from accounting.translation_utils import t
-from accounting.excel_utils import create_excel_formats
-from accounting.constants import (
+from accountr.database import Account
+from accountr.translation_utils import t
+from accountr.excel_utils import create_excel_formats
+from accountr.constants import (
     EXCEL_MAX_SHEET_NAME_LENGTH,
     BALANCE_ROUNDING_PRECISION,
 )
-from accounting.database_switcher import DatabaseSwitcher
+from accountr.database_switcher import DatabaseSwitcher
 
 
 def export_journal_entries_sheet(writer, session, formats, t):

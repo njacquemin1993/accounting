@@ -4,8 +4,8 @@ Provides interface for switching between databases and creating new ones.
 """
 
 import streamlit as st
-from accounting.database_switcher import DatabaseSwitcher
-from accounting.translation_utils import t
+from accountr.database_switcher import DatabaseSwitcher
+from accountr.translation_utils import t
 
 
 def render_database_switcher_sidebar():
@@ -116,7 +116,7 @@ def render_database_switcher_main():
         try:
             db_manager = db_switcher.get_database_manager()
             with db_manager.get_session() as session:
-                from accounting.database import Account, JournalEntry
+                from accountr.database import Account, JournalEntry
 
                 account_count = session.query(Account).count()
                 entry_count = session.query(JournalEntry).count()

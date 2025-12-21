@@ -4,16 +4,16 @@ Chart of Accounts page for navigation.
 
 import streamlit as st
 import pandas as pd
-from accounting.database import Account, JournalEntry
-from accounting.translation_utils import t
-from accounting.helpers import (
+from accountr.database import Account, JournalEntry
+from accountr.translation_utils import t
+from accountr.helpers import (
     validate_account_code,
     get_category_display_map,
     get_reverse_category_map,
     is_balance_sheet_category,
     format_currency,
 )
-from accounting.pages.base_page import BasePage
+from accountr.pages.base_page import BasePage
 
 
 @st.dialog(t("edit_account"))

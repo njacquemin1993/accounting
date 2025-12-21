@@ -2,7 +2,7 @@
 Utility functions for Excel export formatting and configuration.
 """
 
-from accounting.constants import (
+from accountr.constants import (
     EXCEL_COLOR_HEADER,
     EXCEL_COLOR_TOTAL,
     EXCEL_COLOR_SECTION,

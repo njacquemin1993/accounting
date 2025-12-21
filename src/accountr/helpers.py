@@ -2,7 +2,8 @@
 Common helper functions to reduce code duplication across the application.
 """
 
-from accounting.constants import (
+import importlib.metadata
+from accountr.constants import (
     ACCOUNT_CODE_RANGES,
     CATEGORY_ACTIVE,
     CATEGORY_PASSIVE,
@@ -14,7 +15,20 @@ from accounting.constants import (
     MIN_ACCOUNTS_FOR_JOURNAL_ENTRY,
     DEFAULT_CURRENCY,
 )
-from accounting.translation_utils import t
+from accountr.translation_utils import t
+
+
+def get_app_version() -> str:
+    """
+    Get the application version from package metadata.
+
+    Returns:
+        str: The application version (e.g., "0.1.0")
+    """
+    try:
+        return importlib.metadata.version("accountr")
+    except importlib.metadata.PackageNotFoundError:
+        return "unknown"  # Fallback version
 
 
 def get_category_display_map():

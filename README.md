@@ -26,7 +26,7 @@ A simple accounting application built with Python, Streamlit, and SQLAlchemy.
 
 ### From PyPI (Recommended)
 ```bash
-pip install simple-accounting-app
+pip install accountr
 ```
 
 ### From Source

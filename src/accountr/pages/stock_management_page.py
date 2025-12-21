@@ -4,10 +4,10 @@ Stock Management page for inventory tracking.
 
 import streamlit as st
 import pandas as pd
-from accounting.database import StockItem, StockJournalEntry
-from accounting.translation_utils import t
-from accounting.pages.base_page import BasePage
-from accounting.database_switcher import get_current_db_manager
+from accountr.database import StockItem, StockJournalEntry
+from accountr.translation_utils import t
+from accountr.pages.base_page import BasePage
+from accountr.database_switcher import get_current_db_manager
 
 
 @st.dialog(t("add_new_item"))

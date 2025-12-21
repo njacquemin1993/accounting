@@ -3,14 +3,14 @@ Account Balances page for navigation.
 """
 
 import streamlit as st
-from accounting.accounting_utils import (
+from accountr.accounting_utils import (
     get_trial_balance,
     get_account_entries,
     get_account_balance,
 )
-from accounting.translation_utils import t
-from accounting.helpers import format_currency
-from accounting.pages.base_page import BasePage
+from accountr.translation_utils import t
+from accountr.helpers import format_currency
+from accountr.pages.base_page import BasePage
 
 
 @st.dialog(t("account_details"), width="large")

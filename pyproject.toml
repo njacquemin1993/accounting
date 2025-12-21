@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "simple-accounting-app"
-version = "1.0.0"
+name = "accountr"
+version = "0.1.0"
 description = "A simple accounting application built with Python, Streamlit, and SQLAlchemy"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -44,13 +44,13 @@ dev = [
 "Repository" = "https://github.com/njacquemin1993/accounting"
 
 [project.scripts]
-accounting-app = "accounting.main:main"
+accountr = "accountr.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-accounting = ["server_files/*"]
+accountr = ["server_files/*"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

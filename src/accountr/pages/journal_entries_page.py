@@ -5,11 +5,11 @@ Journal Entries page for navigation.
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
-from accounting.database import Account, JournalEntry
-from accounting.accounting_utils import validate_journal_entry
-from accounting.translation_utils import t
-from accounting.helpers import has_sufficient_accounts, format_currency
-from accounting.pages.base_page import BasePage
+from accountr.database import Account, JournalEntry
+from accountr.accounting_utils import validate_journal_entry
+from accountr.translation_utils import t
+from accountr.helpers import has_sufficient_accounts, format_currency
+from accountr.pages.base_page import BasePage
 
 
 @st.dialog(t("edit_entry"))

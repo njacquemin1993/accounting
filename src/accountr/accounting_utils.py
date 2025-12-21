@@ -3,9 +3,9 @@ Utility functions for accounting calculations and operations.
 """
 
 from sqlalchemy.orm import Session
-from accounting.database import Account, JournalEntry
+from accountr.database import Account, JournalEntry
 import pandas as pd
-from accounting.constants import (
+from accountr.constants import (
     CATEGORY_ACTIVE,
     CATEGORY_PASSIVE,
     CATEGORY_EXPENSES,

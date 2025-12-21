@@ -3,8 +3,8 @@ Translation utilities for the accounting application.
 """
 
 import streamlit as st
-from accounting.translations import get_translation, get_available_languages
-from accounting.constants import (
+from accountr.translations import get_translation, get_available_languages
+from accountr.constants import (
     AVAILABLE_LANGUAGES,
     DEFAULT_LANGUAGE,
     LANGUAGE_OPTIONS,
