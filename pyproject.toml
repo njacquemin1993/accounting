@@ -19,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Topic :: Office/Business :: Financial :: Accounting",
-    "Framework :: Streamlit",
 ]
 keywords = ["accounting", "bookkeeping", "streamlit", "finance"]
 requires-python = ">=3.12"
