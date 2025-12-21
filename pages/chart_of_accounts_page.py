@@ -4,9 +4,9 @@ Chart of Accounts page for navigation.
 
 import streamlit as st
 import pandas as pd
-from database import DatabaseManager, Account, JournalEntry
+from database import Account, JournalEntry
+from database_switcher import get_current_db_manager
 from translation_utils import t, language_selector, header_with_controls
-from file_management_ui import file_management_button
 from helpers import (
     validate_account_code,
     get_category_display_map,
@@ -17,8 +17,7 @@ from helpers import (
 
 
 def get_database():
-    db_manager = DatabaseManager()
-    return db_manager
+    return get_current_db_manager()
 
 
 @st.dialog(t("edit_account"))
@@ -38,7 +37,7 @@ def show_edit_account_dialog(session, account_id):
     )
 
     # Category selection with current value
-    category_map = get_category_display_map(t)
+    category_map = get_category_display_map()
     categories = list(category_map.values())
 
     current_category_translated = category_map.get(account.category, t("active"))
@@ -51,7 +50,7 @@ def show_edit_account_dialog(session, account_id):
     edit_category = st.selectbox(t("category"), categories, index=current_index)
 
     # Map translated category back to English for validation
-    reverse_category_map = get_reverse_category_map(t)
+    reverse_category_map = get_reverse_category_map()
     db_category = reverse_category_map.get(edit_category, "Active")
 
     # Show balance field only for Active and Passive accounts
@@ -256,7 +255,6 @@ with header_col2:
 
 with header_col3:
     st.markdown("<br>", unsafe_allow_html=True)
-    file_management_button()
 
 st.markdown("---")
 

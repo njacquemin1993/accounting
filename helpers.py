@@ -14,9 +14,10 @@ from constants import (
     MIN_ACCOUNTS_FOR_JOURNAL_ENTRY,
     DEFAULT_CURRENCY,
 )
+from translation_utils import t
 
 
-def get_category_display_map(t):
+def get_category_display_map():
     """
     Get a mapping from internal category names to translated display names.
 
@@ -34,7 +35,7 @@ def get_category_display_map(t):
     }
 
 
-def get_reverse_category_map(t):
+def get_reverse_category_map():
     """
     Get a mapping from translated display names to internal category names.
 
@@ -52,7 +53,7 @@ def get_reverse_category_map(t):
     }
 
 
-def validate_account_code(account_code: str, category: str, t) -> tuple[bool, str]:
+def validate_account_code(account_code: str, category: str) -> tuple[bool, str]:
     """
     Validate account code based on category.
 

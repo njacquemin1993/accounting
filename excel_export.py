@@ -19,6 +19,15 @@ from helpers import (
     is_balance_sheet_category,
     get_balance_side,
 )
+from accounting_utils import (
+    get_income_statement_data,
+    get_balance_sheet_data,
+)
+import io
+from database import Account
+from database_switcher import get_current_db_manager
+from translation_utils import t
+from excel_utils import create_excel_formats
 from constants import (
     EXCEL_MAX_SHEET_NAME_LENGTH,
     BALANCE_ROUNDING_PRECISION,
@@ -366,3 +375,53 @@ def _write_separator_row(worksheet, row, num_cols, format_obj):
     """Write a separator row."""
     for col in range(num_cols):
         worksheet.write(row, col, "", format_obj)
+
+
+def create_excel_export():
+    """Create Excel file with multiple tabs for accounting data export."""
+    try:
+        # Initialize database
+        db_manager = get_current_db_manager()
+        session = db_manager.get_session()
+
+        # Create Excel writer object in memory
+        output = io.BytesIO()
+        writer = pd.ExcelWriter(output, engine="xlsxwriter")
+        workbook = writer.book
+
+        # Define formats using utility
+        formats = create_excel_formats(workbook)
+
+        # 1. Journal Entries Tab
+        export_journal_entries_sheet(writer, session, formats, t)
+
+        # 2. Individual Account Details (one tab per account)
+        accounts = (
+            session.query(Account)
+            .filter(Account.is_active)
+            .order_by(Account.account_code)
+            .all()
+        )
+        for account in accounts:
+            export_account_detail_sheet(writer, session, account, formats, t)
+
+        # 3. Result Sheet (Income Statement)
+        income_data = get_income_statement_data(session)
+        export_result_sheet(writer, workbook, income_data, formats, t)
+
+        # 4. Balance Sheet (including net income)
+        balance_data = get_balance_sheet_data(session)
+        net_income = income_data.get("net_income", 0)
+        export_balance_sheet(writer, workbook, balance_data, net_income, formats, t)
+
+        # Close the writer and get the data
+        writer.close()
+        session.close()
+        db_manager.dispose()
+
+        output.seek(0)
+        return output.getvalue()
+
+    except Exception as e:
+        print(f"Error creating Excel export: {e}")
+        return None

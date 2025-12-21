@@ -3,15 +3,14 @@ Account Balances page for navigation.
 """
 
 import streamlit as st
-from database import DatabaseManager
+from database_switcher import get_current_db_manager
 from accounting_utils import get_trial_balance, get_account_entries, get_account_balance
 from translation_utils import t, language_selector, header_with_controls
-from file_management_ui import file_management_button
 from helpers import format_currency
 
 
 def get_database():
-    db_manager = DatabaseManager()
+    db_manager = get_current_db_manager()
     return db_manager
 
 
@@ -71,7 +70,6 @@ with header_col2:
 
 with header_col3:
     st.markdown("<br>", unsafe_allow_html=True)
-    file_management_button()
 
 st.markdown("---")
 

@@ -1,6 +1,5 @@
 """
 Constants for the accounting application.
-Centralizes magic numbers, strings, and configuration values.
 """
 
 # Account Categories
@@ -55,8 +54,12 @@ EXCEL_COLOR_STARTING_BALANCE = "#FFF8DC"
 EXCEL_COLOR_NET_INCOME = "#E6F7FF"
 
 # Database Configuration
-DEFAULT_DB_PATH = "accounting.db"
 DEFAULT_SERVER_FILES_DIR = "server_files"
+DEFAULT_DB_NAME = "default_accounting.db"
+
+# Database Management
+DATABASE_EXTENSION = ".db"
+MAX_DATABASE_NAME_LENGTH = 50
 
 # File Retry Configuration
 FILE_OPERATION_MAX_ATTEMPTS = 5
@@ -80,3 +83,5 @@ MIN_ACCOUNTS_FOR_JOURNAL_ENTRY = 2
 
 # Rounding Precision
 BALANCE_ROUNDING_PRECISION = 0.01
+
+FILE_LIST_COLUMNS_WIDTH = [3, 2, 2, 2, 2, 1, 1, 1]
