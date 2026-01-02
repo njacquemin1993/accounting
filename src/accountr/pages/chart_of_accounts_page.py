@@ -47,8 +47,7 @@ def show_edit_account_dialog(session, account_id):
         current_balance = account.balance if hasattr(account, "balance") else 0.0
         edit_balance = st.number_input(
             t("balance"),
-            min_value=0.0,
-            step=0.01,
+            step=1.00,
             format="%.2f",
             value=float(current_balance),
             help=t("initial_balance_help"),
