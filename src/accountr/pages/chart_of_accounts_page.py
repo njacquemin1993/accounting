@@ -60,7 +60,7 @@ def show_edit_account_dialog(session, account_id):
         if st.button(t("update_account"), width="stretch", type="primary"):
             if edit_code and edit_name:
                 # Validate account code for the category
-                is_valid, validation_error = validate_account_code(edit_code, db_category, t)
+                is_valid, validation_error = validate_account_code(edit_code, db_category)
                 if not is_valid:
                     st.error(validation_error)
                     return
