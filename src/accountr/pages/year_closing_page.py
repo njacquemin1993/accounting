@@ -22,10 +22,11 @@ def create_year_end_closing_package(retained_earnings_account_id):
 
         # 1. Create database backup
         db_switcher = DatabaseSwitcher()
-        db_backup_data = db_switcher.get_download_data()
+        current_db = db_switcher.get_current_database()
+        db_backup_data = db_switcher.get_download_data(current_db)
 
         # 2. Create Excel export
-        excel_data = create_excel_export()
+        excel_data = create_excel_export(current_db)
 
         if not db_backup_data or not excel_data:
             return None, None, None
