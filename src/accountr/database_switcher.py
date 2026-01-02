@@ -144,13 +144,13 @@ class DatabaseSwitcher:
             bool: Success status
         """
         try:
-            target_path = self.server_files_dir / uploaded_file.name
+            target_path = self.server_dir / uploaded_file.name
 
             with target_path.open("wb") as f:
                 f.write(uploaded_file.getvalue())
 
             # Validate it's a valid SQLite database
-            if not self.validate_database(target_path):
+            if self.get_database_info(target_path.stem) is None:
                 target_path.unlink()
                 return False
 
